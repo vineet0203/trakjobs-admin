@@ -21,12 +21,14 @@ export function FilterBar() {
         placeholder="Search services..."
         size="small"
         sx={{ width: 320 }}
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position="start">
-              <Search size={16} color="#9CA3AF" />
-            </InputAdornment>
-          ),
+        slotProps={{
+          input: {
+            startAdornment: (
+              <InputAdornment position="start">
+                <Search size={16} color="#9CA3AF" />
+              </InputAdornment>
+            ),
+          },
         }}
       />
       <div className="flex-1" />
