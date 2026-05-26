@@ -2,12 +2,7 @@ import { createTheme } from "@mui/material/styles";
 
 export const muiTheme = createTheme({
   palette: {
-    primary: {
-      main: "#7C3AED",
-      light: "#EDE9FE",
-      dark: "#5B21B6",
-      contrastText: "#FFFFFF",
-    },
+    primary: { main: "#7C3AED", light: "#EDE9FE", dark: "#5B21B6", contrastText: "#FFFFFF" },
     success: { main: "#16A34A" },
     warning: { main: "#EA580C" },
     error: { main: "#DC2626" },
@@ -29,10 +24,6 @@ export const muiTheme = createTheme({
     },
     MuiChip: { styleOverrides: { root: { borderRadius: 9999, fontWeight: 600 } } },
     MuiPaper: { defaultProps: { elevation: 0 } },
-    MuiOutlinedInput: {
-      styleOverrides: {
-        root: { borderRadius: 10, backgroundColor: "#fff" },
-      },
-    },
+    MuiOutlinedInput: { styleOverrides: { root: { borderRadius: 10, backgroundColor: "#fff" } } },
   },
 });
