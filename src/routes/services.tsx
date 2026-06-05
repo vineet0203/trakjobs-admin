@@ -9,12 +9,6 @@ const servicesSearchSchema = z.object({
 
 export const Route = createFileRoute("/services")({
   validateSearch: (search) => servicesSearchSchema.parse(search),
-  head: () => ({
-    meta: [
-      { title: "Services — TrakJobs Admin" },
-      { name: "description", content: "Manage all marketplace services on TrakJobs admin." },
-    ],
-  }),
   component: Page,
 });
 
