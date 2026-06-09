@@ -1,17 +1,23 @@
 export interface Service {
-  id: string;
+  id: string | number;
   title: string;
-  subtitle: string;
-  image: string;
-  vendor: { name: string; avatar?: string; initials?: string; avatarColor?: string; verified: boolean };
-  finance: { amount: string; label: string };
-  category: "Home Services" | "Repair Services" | "Automotive" | "Other Services";
-  location: string;
-  detailedAddress?: string;
-  price: string;
+  subtitle?: string | null;
+  image?: string | null;
+  vendor?: { name: string; avatar?: string; initials?: string; avatarColor?: string; verified: boolean } | null;
+  finance?: { amount: string; label: string } | null;
+  category: string;
+  location?: string | null;
+  detailedAddress?: string | null;
+  detailed_address?: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
+  price?: string | null;
   status: "Published" | "Pending" | "Draft";
   featured: boolean;
-  dateAdded: string;
+  sort_order?: number;
+  dateAdded?: string;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export const servicesData: Service[] = [

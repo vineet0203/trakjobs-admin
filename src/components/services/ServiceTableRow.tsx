@@ -7,6 +7,8 @@ import { VendorAvatar } from "@/components/ui/VendorAvatar";
 import { CategoryBadge } from "@/components/ui/CategoryBadge";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { FeaturedToggle } from "@/components/ui/FeaturedToggle";
+import { useAppDispatch } from "@/store";
+import { toggleServiceStatus } from "@/store/slices/servicesSlice";
 
 export function ServiceTableRow({ 
   s, 
@@ -17,9 +19,15 @@ export function ServiceTableRow({
   s: Service; 
   index: number;
   onEdit: (s: Service) => void;
-  onDelete: (id: string) => void;
+  onDelete: (id: string | number) => void;
 }) {
-  const d = new Date(s.dateAdded);
+  const dispatch = useAppDispatch();
+  const d = new Date(s.created_at || s.dateAdded || new Date());
+  
+  // Set fallback values for vendor and finance if they are empty
+  const vendor = s.vendor || { name: "Admin Vendor", initials: "ADM", avatarColor: "#7C3AED", verified: true };
+  const finance = s.finance || { amount: "PKR 0", label: "Earnings" };
+
   return (
     <TableRow
       component={motion.tr}
@@ -31,17 +39,17 @@ export function ServiceTableRow({
       <TableCell sx={{ color: "#6B7280", fontSize: 13, fontFamily: "ui-monospace, SFMono-Regular, monospace" }}>{s.id}</TableCell>
       <TableCell>
         <div className="flex items-center gap-3">
-          <Avatar variant="rounded" src={s.image} sx={{ width: 40, height: 40, borderRadius: 1.5 }} />
+          <Avatar variant="rounded" src={s.image || undefined} sx={{ width: 40, height: 40, borderRadius: 1.5 }} />
           <div className="min-w-0">
             <div className="text-sm font-bold text-[#111827] leading-tight">{s.title}</div>
             <div className="text-xs text-[#6B7280] leading-tight mt-0.5">{s.subtitle}</div>
           </div>
         </div>
       </TableCell>
-      <TableCell><VendorAvatar vendor={s.vendor} /></TableCell>
+      <TableCell><VendorAvatar vendor={vendor} /></TableCell>
       <TableCell>
-        <div className="text-sm font-bold text-[#111827]">{s.finance.amount}</div>
-        <div className="text-xs text-[#6B7280]">{s.finance.label}</div>
+        <div className="text-sm font-bold text-[#111827]">{finance.amount}</div>
+        <div className="text-xs text-[#6B7280]">{finance.label}</div>
       </TableCell>
       <TableCell><CategoryBadge category={s.category} /></TableCell>
       <TableCell>
@@ -51,7 +59,12 @@ export function ServiceTableRow({
         </div>
       </TableCell>
       <TableCell sx={{ fontSize: 13, fontWeight: 600, color: "#111827" }}>{s.price}</TableCell>
-      <TableCell><StatusBadge status={s.status} /></TableCell>
+      <TableCell 
+        onClick={() => dispatch(toggleServiceStatus(s.id))} 
+        sx={{ cursor: "pointer" }}
+      >
+        <StatusBadge status={s.status} />
+      </TableCell>
       <TableCell><FeaturedToggle id={s.id} on={s.featured} /></TableCell>
       <TableCell>
         <div className="text-sm font-bold text-[#111827]">{format(d, "MMM dd, yyyy")}</div>

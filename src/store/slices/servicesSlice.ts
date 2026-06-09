@@ -1,5 +1,6 @@
-import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import { servicesData, type Service } from "@/data/servicesData";
+import { createSlice, createAsyncThunk, type PayloadAction } from "@reduxjs/toolkit";
+import type { Service } from "@/data/servicesData";
+import { servicesApi } from "@/services/api/servicesApi";
 
 interface ServicesState {
   services: Service[];
@@ -10,70 +11,164 @@ interface ServicesState {
   currentPage: number;
   totalPages: number;
   totalCount: number;
+  loading: boolean;
+  error: string | null;
+  stats: {
+    total: number;
+    published: number;
+    pending: number;
+    draft: number;
+  };
 }
 
 const initialState: ServicesState = {
-  services: servicesData,
+  services: [],
   searchQuery: "",
   categoryFilter: "all",
   locationFilter: "all",
   statusFilter: "all",
   currentPage: 1,
-  totalPages: 37,
-  totalCount: 256,
+  totalPages: 1,
+  totalCount: 0,
+  loading: false,
+  error: null,
+  stats: {
+    total: 0,
+    published: 0,
+    pending: 0,
+    draft: 0,
+  },
 };
+
+export const fetchServices = createAsyncThunk(
+  "services/fetchServices",
+  async (_, { getState, rejectWithValue }) => {
+    try {
+      const state = (getState() as any).services as ServicesState;
+      const params = {
+        search: state.searchQuery || undefined,
+        category: state.categoryFilter === "all" ? undefined : state.categoryFilter,
+        status: state.statusFilter === "all" ? undefined : state.statusFilter,
+        page: state.currentPage,
+      };
+      const response = await servicesApi.getAllServices(params);
+      return response;
+    } catch (err: any) {
+      return rejectWithValue(err.response?.data?.message || "Failed to fetch services");
+    }
+  }
+);
+
+export const createService = createAsyncThunk(
+  "services/createService",
+  async (data: Partial<Service>, { dispatch, rejectWithValue }) => {
+    try {
+      const response = await servicesApi.createService(data);
+      dispatch(fetchServices());
+      return response.data;
+    } catch (err: any) {
+      return rejectWithValue(err.response?.data?.message || "Failed to create service");
+    }
+  }
+);
+
+export const updateService = createAsyncThunk(
+  "services/updateService",
+  async ({ id, data }: { id: string | number; data: Partial<Service> }, { dispatch, rejectWithValue }) => {
+    try {
+      const response = await servicesApi.updateService(id, data);
+      dispatch(fetchServices());
+      return response.data;
+    } catch (err: any) {
+      return rejectWithValue(err.response?.data?.message || "Failed to update service");
+    }
+  }
+);
+
+export const removeService = createAsyncThunk(
+  "services/removeService",
+  async (id: string | number, { dispatch, rejectWithValue }) => {
+    try {
+      await servicesApi.deleteService(id);
+      dispatch(fetchServices());
+      return id;
+    } catch (err: any) {
+      return rejectWithValue(err.response?.data?.message || "Failed to delete service");
+    }
+  }
+);
+
+export const toggleServiceFeatured = createAsyncThunk(
+  "services/toggleServiceFeatured",
+  async (id: string | number, { dispatch, rejectWithValue }) => {
+    try {
+      const response = await servicesApi.toggleFeatured(id);
+      dispatch(fetchServices());
+      return response.data;
+    } catch (err: any) {
+      return rejectWithValue(err.response?.data?.message || "Failed to toggle featured status");
+    }
+  }
+);
+
+export const toggleServiceStatus = createAsyncThunk(
+  "services/toggleServiceStatus",
+  async (id: string | number, { dispatch, rejectWithValue }) => {
+    try {
+      const response = await servicesApi.toggleStatus(id);
+      dispatch(fetchServices());
+      return response.data;
+    } catch (err: any) {
+      return rejectWithValue(err.response?.data?.message || "Failed to toggle status");
+    }
+  }
+);
 
 const slice = createSlice({
   name: "services",
   initialState,
   reducers: {
-    setSearch: (s, a: PayloadAction<string>) => { s.searchQuery = a.payload; },
-    setCategory: (s, a: PayloadAction<string>) => { s.categoryFilter = a.payload; },
-    setLocation: (s, a: PayloadAction<string>) => { s.locationFilter = a.payload; },
-    setStatus: (s, a: PayloadAction<string>) => { s.statusFilter = a.payload; },
-    setPage: (s, a: PayloadAction<number>) => { s.currentPage = a.payload; },
-    toggleFeatured: (s, a: PayloadAction<string>) => {
-      const svc = s.services.find((x) => x.id === a.payload);
-      if (svc) svc.featured = !svc.featured;
+    setSearch: (s, a: PayloadAction<string>) => {
+      s.searchQuery = a.payload;
+      s.currentPage = 1;
     },
-    addService: (s, a: PayloadAction<Omit<Service, "id" | "dateAdded" | "featured" | "vendor" | "finance" | "status"> & { imageFile?: string }>) => {
-      const id = `#${Math.floor(1000 + Math.random() * 9000)}`;
-      const newService: Service = {
-        id,
-        title: a.payload.title,
-        subtitle: a.payload.subtitle || "Custom service",
-        image: a.payload.image || "https://images.unsplash.com/photo-1621905251918-48416bd8575a?w=80&h=80&fit=crop",
-        vendor: { name: "Admin Vendor", initials: "ADM", avatarColor: "#7C3AED", verified: true },
-        finance: { amount: "PKR 0", label: "Earnings" },
-        category: a.payload.category || "Other Services",
-        location: a.payload.location || "Lahore, Pakistan",
-        detailedAddress: a.payload.detailedAddress,
-        price: a.payload.price.startsWith("PKR") ? a.payload.price : `PKR ${a.payload.price}`,
-        status: "Published",
-        featured: false,
-        dateAdded: new Date().toISOString(),
-      };
-      s.services.unshift(newService);
-      s.totalCount += 1;
+    setCategory: (s, a: PayloadAction<string>) => {
+      s.categoryFilter = a.payload;
+      s.currentPage = 1;
     },
-    editService: (s, a: PayloadAction<{ id: string; title: string; subtitle?: string; image?: string; price: string; location: string; detailedAddress?: string; category?: any }>) => {
-      const svc = s.services.find((x) => x.id === a.payload.id);
-      if (svc) {
-        svc.title = a.payload.title;
-        if (a.payload.subtitle) svc.subtitle = a.payload.subtitle;
-        if (a.payload.image) svc.image = a.payload.image;
-        svc.price = a.payload.price.startsWith("PKR") ? a.payload.price : `PKR ${a.payload.price}`;
-        svc.location = a.payload.location;
-        if (a.payload.detailedAddress) svc.detailedAddress = a.payload.detailedAddress;
-        if (a.payload.category) svc.category = a.payload.category;
-      }
+    setLocation: (s, a: PayloadAction<string>) => {
+      s.locationFilter = a.payload;
+      s.currentPage = 1;
     },
-    deleteService: (s, a: PayloadAction<string>) => {
-      s.services = s.services.filter((x) => x.id !== a.payload);
-      s.totalCount = Math.max(0, s.totalCount - 1);
+    setStatus: (s, a: PayloadAction<string>) => {
+      s.statusFilter = a.payload;
+      s.currentPage = 1;
     },
+    setPage: (s, a: PayloadAction<number>) => {
+      s.currentPage = a.payload;
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchServices.pending, (s) => {
+        s.loading = true;
+        s.error = null;
+      })
+      .addCase(fetchServices.fulfilled, (s, a) => {
+        s.loading = false;
+        s.services = a.payload.data;
+        s.totalCount = a.payload.total;
+        s.totalPages = a.payload.last_page;
+        if (a.payload.stats) {
+          s.stats = a.payload.stats;
+        }
+      })
+      .addCase(fetchServices.rejected, (s, a) => {
+        s.loading = false;
+        s.error = a.payload as string;
+      });
   },
 });
 
-export const { setSearch, setCategory, setLocation, setStatus, setPage, toggleFeatured, addService, editService, deleteService } = slice.actions;
+export const { setSearch, setCategory, setLocation, setStatus, setPage } = slice.actions;
 export default slice.reducer;

@@ -1,12 +1,12 @@
 import { motion } from "framer-motion";
 import { useAppDispatch } from "@/store";
-import { toggleFeatured } from "@/store/slices/servicesSlice";
+import { toggleServiceFeatured } from "@/store/slices/servicesSlice";
 
-export function FeaturedToggle({ id, on }: { id: string; on: boolean }) {
+export function FeaturedToggle({ id, on }: { id: string | number; on: boolean }) {
   const dispatch = useAppDispatch();
   return (
     <button
-      onClick={() => dispatch(toggleFeatured(id))}
+      onClick={() => dispatch(toggleServiceFeatured(id))}
       className="relative inline-flex items-center rounded-full transition-colors"
       style={{ width: 44, height: 24, background: on ? "#7C3AED" : "#D1D5DB" }}
       aria-pressed={on}

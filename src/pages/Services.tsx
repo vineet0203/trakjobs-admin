@@ -15,22 +15,34 @@ import { StatsCards } from "@/components/services/StatsCards";
 import { FilterBar } from "@/components/services/FilterBar";
 import { ServicesTable } from "@/components/services/ServicesTable";
 import { ServiceDialog } from "@/components/services/ServiceDialog";
-import { useAppDispatch } from "@/store";
-import { addService, editService, deleteService } from "@/store/slices/servicesSlice";
+import { useAppDispatch, useAppSelector } from "@/store";
+import {
+  fetchServices,
+  createService,
+  updateService,
+  removeService
+} from "@/store/slices/servicesSlice";
 import type { Service } from "@/data/servicesData";
+import { CircularProgress } from "@mui/material";
 
 export function ServicesPage() {
   const dispatch = useAppDispatch();
   const search = useSearch({ from: "/services" });
   const navigate = useNavigate({ from: "/services" });
   
+  const { searchQuery, categoryFilter, locationFilter, statusFilter, currentPage, loading } = useAppSelector((s) => s.services);
+
   // Service Add/Edit Dialog state
   const [formOpen, setFormOpen] = useState(false);
   const [selectedService, setSelectedService] = useState<Service | null>(null);
 
   // Delete Confirmation Dialog state
   const [deleteOpen, setDeleteOpen] = useState(false);
-  const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [deleteId, setDeleteId] = useState<string | number | null>(null);
+
+  useEffect(() => {
+    dispatch(fetchServices());
+  }, [dispatch, searchQuery, categoryFilter, locationFilter, statusFilter, currentPage]);
 
   useEffect(() => {
     if (search.action === "new") {
@@ -51,14 +63,14 @@ export function ServicesPage() {
     setFormOpen(true);
   };
 
-  const handleDeleteClick = (id: string) => {
+  const handleDeleteClick = (id: string | number) => {
     setDeleteId(id);
     setDeleteOpen(true);
   };
 
   const handleConfirmDelete = () => {
     if (deleteId) {
-      dispatch(deleteService(deleteId));
+      dispatch(removeService(deleteId));
       setDeleteId(null);
       setDeleteOpen(false);
     }
@@ -66,10 +78,11 @@ export function ServicesPage() {
 
   const handleSaveService = (data: any) => {
     if (data.id) {
-      dispatch(editService(data));
+      dispatch(updateService({ id: data.id, data }));
     } else {
-      dispatch(addService(data));
+      dispatch(createService(data));
     }
+    setFormOpen(false);
   };
 
   return (
@@ -99,7 +112,13 @@ export function ServicesPage() {
 
       <StatsCards />
       <FilterBar />
-      <ServicesTable onEdit={handleEdit} onDelete={handleDeleteClick} />
+      {loading ? (
+        <div className="flex justify-center items-center py-12 bg-white rounded-3xl border border-gray-100 min-h-[300px]">
+          <CircularProgress size={40} sx={{ color: "#7C3AED" }} />
+        </div>
+      ) : (
+        <ServicesTable onEdit={handleEdit} onDelete={handleDeleteClick} />
+      )}
 
       {/* Add / Edit Form Dialog */}
       <ServiceDialog

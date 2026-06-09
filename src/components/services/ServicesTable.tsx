@@ -6,16 +6,8 @@ import type { Service } from "@/data/servicesData";
 
 const headers = ["ID", "Service", "Vendor", "Finance", "Category", "Location", "Price", "Status", "Featured", "Date Added", "Actions"];
 
-export function ServicesTable({ onEdit, onDelete }: { onEdit: (s: Service) => void; onDelete: (id: string) => void }) {
-  const { services, searchQuery, categoryFilter, locationFilter, statusFilter } = useAppSelector((s) => s.services);
-
-  const filtered = services.filter((s) => {
-    if (searchQuery && !s.title.toLowerCase().includes(searchQuery.toLowerCase())) return false;
-    if (categoryFilter !== "all" && s.category !== categoryFilter) return false;
-    if (locationFilter !== "all" && !s.location.startsWith(locationFilter)) return false;
-    if (statusFilter !== "all" && s.status !== statusFilter) return false;
-    return true;
-  });
+export function ServicesTable({ onEdit, onDelete }: { onEdit: (s: Service) => void; onDelete: (id: string | number) => void }) {
+  const { services } = useAppSelector((s) => s.services);
 
   return (
     <Paper sx={{ border: "1px solid #E5E7EB", borderRadius: 3, overflow: "hidden", bgcolor: "#fff" }}>
@@ -27,7 +19,7 @@ export function ServicesTable({ onEdit, onDelete }: { onEdit: (s: Service) => vo
             </TableRow>
           </TableHead>
           <TableBody>
-            {filtered.map((s, i) => <ServiceTableRow key={s.id} s={s} index={i} onEdit={onEdit} onDelete={onDelete} />)}
+            {services.map((s, i) => <ServiceTableRow key={s.id} s={s} index={i} onEdit={onEdit} onDelete={onDelete} />)}
           </TableBody>
         </Table>
       </TableContainer>
