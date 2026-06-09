@@ -91,10 +91,10 @@ export function ServicesPage() {
         await dispatch(createService(data)).unwrap();
         toast.success("Service created successfully");
       }
+      setFormOpen(false);
     } catch (err: any) {
       toast.error(err || "Failed to save service");
     }
-    setFormOpen(false);
   };
 
   return (

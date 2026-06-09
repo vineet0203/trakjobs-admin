@@ -28,9 +28,8 @@ const items: Item[] = [
 ];
 
 const subItems = [
-  { label: "All Services", href: "/services", search: undefined },
-  { label: "Add New Service", href: "/services", search: { action: "new" } },
   { label: "Service Categories", href: "/service-categories", search: undefined },
+  { label: "All Services", href: "/services", search: undefined },
 ];
 
 export function Sidebar({ open = true }: { open?: boolean }) {

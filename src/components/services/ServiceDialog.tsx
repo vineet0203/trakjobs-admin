@@ -298,7 +298,7 @@ export function ServiceDialog({ open, onClose, onSave, service }: ServiceDialogP
             select
             value={subCategoryId}
             onChange={(e) => {
-              const subId = e.target.value as number;
+              const subId = Number(e.target.value);
               setSubCategoryId(subId);
               const sub = subCategories.find((s) => s.id === subId);
               if (sub) {
