@@ -19,14 +19,13 @@ export const vendorService = {
     per_page?: number;
   }): Promise<PaginatedResponse<Vendor>> => {
     const response = await api.get("/api/v1/admin/vendors", { params });
-    const d = response.data?.data;
     return {
-      data: Array.isArray(d?.data) ? d.data : [],
+      data: Array.isArray(response.data?.data) ? response.data.data : [],
       meta: {
-        current_page: d?.meta?.current_page || 1,
-        last_page: d?.meta?.last_page || 1,
-        per_page: d?.meta?.per_page || 10,
-        total: d?.meta?.total || 0,
+        current_page: response.data?.meta?.current_page || 1,
+        last_page: response.data?.meta?.last_page || 1,
+        per_page: response.data?.meta?.per_page || 10,
+        total: response.data?.meta?.total || 0,
       },
     };
   },
