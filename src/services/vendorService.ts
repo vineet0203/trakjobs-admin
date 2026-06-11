@@ -19,8 +19,16 @@ export const vendorService = {
     per_page?: number;
   }): Promise<PaginatedResponse<Vendor>> => {
     const response = await api.get("/api/v1/admin/vendors", { params });
-    // API returns response.data as paginated object: { success, message, data: { data: [...], current_page, ... } }
-    return response.data.data;
+    const d = response.data?.data;
+    return {
+      data: Array.isArray(d?.data) ? d.data : [],
+      meta: {
+        current_page: d?.meta?.current_page || 1,
+        last_page: d?.meta?.last_page || 1,
+        per_page: d?.meta?.per_page || 10,
+        total: d?.meta?.total || 0,
+      },
+    };
   },
 
   getVendor: async (id: number): Promise<Vendor> => {

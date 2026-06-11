@@ -95,77 +95,85 @@ export function VendorTable({
             </TableRow>
           </TableHead>
           <TableBody>
-            {vendors.map((v, index) => {
-              const joinedDate = v.created_at ? new Date(v.created_at) : new Date();
-              return (
-                <TableRow
-                  key={v.id}
-                  sx={{
-                    "&:hover": { bgcolor: "#F9FAFB" },
-                    "& td": { borderColor: "#F3F4F6", py: 1.5 },
-                  }}
-                >
-                  <TableCell align="center">
-                    <Box
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        width: 24,
-                        height: 24,
-                        borderRadius: "50%",
-                        bgcolor: "#F3E8FF",
-                        color: "#7C3AED",
-                        fontSize: 12,
-                        fontWeight: 700,
-                        mx: "auto",
-                      }}
-                    >
-                      {page * rowsPerPage + index + 1}
-                    </Box>
-                  </TableCell>
-                  <TableCell sx={{ fontWeight: 700, color: "#111827" }}>
-                    {v.business_name}
-                  </TableCell>
-                  <TableCell sx={{ color: "#374151", fontWeight: 600 }}>{v.full_name}</TableCell>
-                  <TableCell sx={{ color: "#4B5563" }}>{v.email}</TableCell>
-                  <TableCell sx={{ color: "#4B5563" }}>{v.mobile_number || "-"}</TableCell>
-                  <TableCell sx={{ color: "#4B5563", textTransform: "capitalize" }}>
-                    {v.service_category?.replace("_", " ") || "-"}
-                  </TableCell>
-                  <TableCell align="center">
-                    <VendorStatusBadge status={v.status} />
-                  </TableCell>
-                  <TableCell align="center" sx={{ color: "#374151", fontWeight: 600 }}>
-                    {v.employee_count}
-                  </TableCell>
-                  <TableCell align="center" sx={{ color: "#374151", fontWeight: 600 }}>
-                    {v.customer_count}
-                  </TableCell>
-                  <TableCell sx={{ color: "#6B7280", fontSize: 13 }}>
-                    {format(joinedDate, "MMM dd, yyyy")}
-                  </TableCell>
-                  <TableCell align="right" sx={{ pr: 3 }}>
-                    <div className="flex items-center justify-end gap-2">
-                      <VendorStatusToggle id={v.id} status={v.status} onChange={onToggleStatus} />
-                      <VendorResetPassword id={v.id} email={v.email} />
-                      <Tooltip title="View / Edit">
-                        <Link to="/vendors/$id" params={{ id: String(v.id) }}>
-                          <IconButton size="small">
-                            <Eye size={16} className="text-[#7C3AED]" />
+            {!vendors || vendors.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={11} align="center" sx={{ py: 6, color: "#6B7280" }}>
+                  No vendors found.
+                </TableCell>
+              </TableRow>
+            ) : (
+              vendors.map((v, index) => {
+                const joinedDate = v.created_at ? new Date(v.created_at) : new Date();
+                return (
+                  <TableRow
+                    key={v.id}
+                    sx={{
+                      "&:hover": { bgcolor: "#F9FAFB" },
+                      "& td": { borderColor: "#F3F4F6", py: 1.5 },
+                    }}
+                  >
+                    <TableCell align="center">
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          width: 24,
+                          height: 24,
+                          borderRadius: "50%",
+                          bgcolor: "#F3E8FF",
+                          color: "#7C3AED",
+                          fontSize: 12,
+                          fontWeight: 700,
+                          mx: "auto",
+                        }}
+                      >
+                        {page * rowsPerPage + index + 1}
+                      </Box>
+                    </TableCell>
+                    <TableCell sx={{ fontWeight: 700, color: "#111827" }}>
+                      {v.business_name}
+                    </TableCell>
+                    <TableCell sx={{ color: "#374151", fontWeight: 600 }}>{v.full_name}</TableCell>
+                    <TableCell sx={{ color: "#4B5563" }}>{v.email}</TableCell>
+                    <TableCell sx={{ color: "#4B5563" }}>{v.mobile_number || "-"}</TableCell>
+                    <TableCell sx={{ color: "#4B5563", textTransform: "capitalize" }}>
+                      {v.service_category?.replace("_", " ") || "-"}
+                    </TableCell>
+                    <TableCell align="center">
+                      <VendorStatusBadge status={v.status} />
+                    </TableCell>
+                    <TableCell align="center" sx={{ color: "#374151", fontWeight: 600 }}>
+                      {v.employee_count}
+                    </TableCell>
+                    <TableCell align="center" sx={{ color: "#374151", fontWeight: 600 }}>
+                      {v.customer_count}
+                    </TableCell>
+                    <TableCell sx={{ color: "#6B7280", fontSize: 13 }}>
+                      {format(joinedDate, "MMM dd, yyyy")}
+                    </TableCell>
+                    <TableCell align="right" sx={{ pr: 3 }}>
+                      <div className="flex items-center justify-end gap-2">
+                        <VendorStatusToggle id={v.id} status={v.status} onChange={onToggleStatus} />
+                        <VendorResetPassword id={v.id} email={v.email} />
+                        <Tooltip title="View / Edit">
+                          <Link to="/vendors/$id" params={{ id: String(v.id) }}>
+                            <IconButton size="small">
+                              <Eye size={16} className="text-[#7C3AED]" />
+                            </IconButton>
+                          </Link>
+                        </Tooltip>
+                        <Tooltip title="Delete Vendor">
+                          <IconButton size="small" onClick={() => handleDeleteClick(v.id)}>
+                            <Trash2 size={16} className="text-red-500" />
                           </IconButton>
-                        </Link>
-                      </Tooltip>
-                      <Tooltip title="Delete Vendor">
-                        <IconButton size="small" onClick={() => handleDeleteClick(v.id)}>
-                          <Trash2 size={16} className="text-red-500" />
-                        </IconButton>
-                      </Tooltip>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              );
-            })}
+                        </Tooltip>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                );
+              })
+            )}
           </TableBody>
         </Table>
       </TableContainer>

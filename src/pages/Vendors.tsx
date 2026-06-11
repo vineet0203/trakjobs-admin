@@ -46,8 +46,16 @@ export function VendorsPage() {
         page: page + 1,
         per_page: rowsPerPage,
       });
-      setVendors(response.data);
-      setTotalCount(response.meta.total);
+      if (response && Array.isArray(response.data)) {
+        setVendors(response.data);
+      } else {
+        setVendors([]);
+      }
+      if (response && response.meta) {
+        setTotalCount(response.meta.total || 0);
+      } else {
+        setTotalCount(0);
+      }
     } catch (err) {
       toast.error("Failed to retrieve vendors data.");
     } finally {
