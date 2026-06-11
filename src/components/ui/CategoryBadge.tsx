@@ -13,7 +13,15 @@ export function CategoryBadge({ category }: { category: string }) {
     <Chip
       size="small"
       label={category}
-      sx={{ bgcolor: s.bg, color: s.color, fontWeight: 600, fontSize: 12, height: 24, borderRadius: 1, px: 0.5 }}
+      sx={{
+        bgcolor: s.bg,
+        color: s.color,
+        fontWeight: 600,
+        fontSize: 12,
+        height: 24,
+        borderRadius: 1,
+        px: 0.5,
+      }}
     />
   );
 }

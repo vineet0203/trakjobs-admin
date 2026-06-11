@@ -15,10 +15,22 @@ import { Upload, X, MapPin, Compass } from "lucide-react";
 import { api } from "@/api/axiosInstance";
 import type { Service } from "@/data/servicesData";
 
+interface ServiceCategory {
+  id: number;
+  name: string;
+  is_active: boolean;
+}
+
+interface ServiceSubCategory {
+  id: number;
+  name: string;
+  is_active: boolean;
+}
+
 interface ServiceDialogProps {
   open: boolean;
   onClose: () => void;
-  onSave: (serviceData: any) => void;
+  onSave: (serviceData: Partial<Service>) => void;
   service?: Service | null;
 }
 
@@ -36,9 +48,9 @@ export function ServiceDialog({ open, onClose, onSave, service }: ServiceDialogP
   const [subCategoryName, setSubCategoryName] = useState("");
   const [status, setStatus] = useState<"Published" | "Pending" | "Draft">("Published");
 
-  const [categories, setCategories] = useState<any[]>([]);
+  const [categories, setCategories] = useState<ServiceCategory[]>([]);
   const [categoriesLoading, setCategoriesLoading] = useState(false);
-  const [subCategories, setSubCategories] = useState<any[]>([]);
+  const [subCategories, setSubCategories] = useState<ServiceSubCategory[]>([]);
   const [subCategoriesLoading, setSubCategoriesLoading] = useState(false);
 
   const [dragActive, setDragActive] = useState(false);
@@ -51,7 +63,7 @@ export function ServiceDialog({ open, onClose, onSave, service }: ServiceDialogP
       try {
         const response = await api.get("/api/v1/public/service-categories");
         const fetched = response.data.data || [];
-        setCategories(fetched.filter((c: any) => c.is_active));
+        setCategories(fetched.filter((c: ServiceCategory) => c.is_active));
       } catch (err) {
         console.error("Failed to fetch categories", err);
       } finally {
@@ -76,7 +88,7 @@ export function ServiceDialog({ open, onClose, onSave, service }: ServiceDialogP
           params: { service_category_id: selectedCat.id },
         });
         const fetched = response.data.data || [];
-        setSubCategories(fetched.filter((s: any) => s.is_active));
+        setSubCategories(fetched.filter((s: ServiceSubCategory) => s.is_active));
       } catch (err) {
         console.error("Failed to fetch sub-categories", err);
       } finally {
@@ -137,7 +149,7 @@ export function ServiceDialog({ open, onClose, onSave, service }: ServiceDialogP
     e.preventDefault();
     e.stopPropagation();
     setDragActive(false);
-    
+
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       const file = e.dataTransfer.files[0];
       const url = URL.createObjectURL(file);
@@ -162,28 +174,36 @@ export function ServiceDialog({ open, onClose, onSave, service }: ServiceDialogP
           const lng = position.coords.longitude;
           setLatitude(lat.toFixed(6));
           setLongitude(lng.toFixed(6));
-          
+
           try {
             const response = await fetch(
               `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}`,
               {
                 headers: {
                   "Accept-Language": "en",
-                  "User-Agent": "TrackJobsAdmin/1.0"
-                }
-              }
+                  "User-Agent": "TrackJobsAdmin/1.0",
+                },
+              },
             );
             if (response.ok) {
               const data = await response.json();
               const address = data.address || {};
-              const city = address.city || address.town || address.village || address.suburb || "Unknown City";
+              const city =
+                address.city || address.town || address.village || address.suburb || "Unknown City";
               const country = address.country || "Pakistan";
               const road = address.road || address.suburb || address.neighbourhood || "";
               const houseNumber = address.house_number || "";
-              
+
               setLocation(`${city}, ${country}`);
-              
-              const detailedParts = [houseNumber, road, address.suburb, city, address.state, country].filter(Boolean);
+
+              const detailedParts = [
+                houseNumber,
+                road,
+                address.suburb,
+                city,
+                address.state,
+                country,
+              ].filter(Boolean);
               setDetailedAddress(detailedParts.join(", ") || data.display_name);
             } else {
               setLocation("Lahore, Pakistan");
@@ -205,7 +225,7 @@ export function ServiceDialog({ open, onClose, onSave, service }: ServiceDialogP
           setDetailedAddress("CCA, Phase 5 D.H.A, Lahore, Punjab, Pakistan");
           setFetchingLocation(false);
         },
-        { enableHighAccuracy: true, timeout: 8000 }
+        { enableHighAccuracy: true, timeout: 8000 },
       );
     } else {
       alert("Geolocation is not supported by your browser.");
@@ -218,7 +238,8 @@ export function ServiceDialog({ open, onClose, onSave, service }: ServiceDialogP
       id: service?.id,
       title,
       subtitle: subtitle || `${category} by Admin`,
-      image: image || "https://images.unsplash.com/photo-1621905251918-48416bd8575a?w=80&h=80&fit=crop",
+      image:
+        image || "https://images.unsplash.com/photo-1621905251918-48416bd8575a?w=80&h=80&fit=crop",
       price: price.startsWith("PKR") ? price : `PKR ${price}`,
       location,
       detailedAddress,
@@ -234,18 +255,18 @@ export function ServiceDialog({ open, onClose, onSave, service }: ServiceDialogP
   };
 
   return (
-    <Dialog 
-      open={open} 
-      onClose={onClose} 
-      maxWidth="sm" 
+    <Dialog
+      open={open}
+      onClose={onClose}
+      maxWidth="sm"
       fullWidth
       slotProps={{
         paper: {
           sx: {
             borderRadius: 3,
             p: 1,
-          }
-        }
+          },
+        },
       }}
     >
       <form onSubmit={handleSubmit}>
@@ -287,10 +308,16 @@ export function ServiceDialog({ open, onClose, onSave, service }: ServiceDialogP
             disabled={categoriesLoading}
           >
             {categoriesLoading ? (
-              <MenuItem disabled value="">Loading categories...</MenuItem>
-            ) : categories.map((c) => (
-              <MenuItem key={c.id} value={c.name}>{c.name}</MenuItem>
-            ))}
+              <MenuItem disabled value="">
+                Loading categories...
+              </MenuItem>
+            ) : (
+              categories.map((c) => (
+                <MenuItem key={c.id} value={c.name}>
+                  {c.name}
+                </MenuItem>
+              ))
+            )}
           </TextField>
 
           <TextField
@@ -312,12 +339,18 @@ export function ServiceDialog({ open, onClose, onSave, service }: ServiceDialogP
             disabled={subCategoriesLoading || !category}
           >
             {subCategoriesLoading ? (
-              <MenuItem disabled value="">Loading sub-categories...</MenuItem>
+              <MenuItem disabled value="">
+                Loading sub-categories...
+              </MenuItem>
             ) : subCategories.length === 0 ? (
-              <MenuItem disabled value="">No sub-categories available</MenuItem>
+              <MenuItem disabled value="">
+                No sub-categories available
+              </MenuItem>
             ) : (
               subCategories.map((s) => (
-                <MenuItem key={s.id} value={s.id}>{s.name}</MenuItem>
+                <MenuItem key={s.id} value={s.id}>
+                  {s.name}
+                </MenuItem>
               ))
             )}
           </TextField>
@@ -326,7 +359,7 @@ export function ServiceDialog({ open, onClose, onSave, service }: ServiceDialogP
             label="Status"
             select
             value={status}
-            onChange={(e) => setStatus(e.target.value as any)}
+            onChange={(e) => setStatus(e.target.value as "Published" | "Pending" | "Draft")}
             fullWidth
             required
             variant="outlined"
@@ -360,7 +393,9 @@ export function ServiceDialog({ open, onClose, onSave, service }: ServiceDialogP
                 onDragLeave={handleDrag}
                 onDrop={handleDrop}
                 className={`w-full h-36 border-2 border-dashed rounded-lg flex flex-col items-center justify-center p-4 cursor-pointer transition-all ${
-                  dragActive ? "border-[#7C3AED] bg-[#7C3AED]/5" : "border-[#D1D5DB] hover:border-[#7C3AED] bg-[#F9FAFB] hover:bg-purple-50/20"
+                  dragActive
+                    ? "border-[#7C3AED] bg-[#7C3AED]/5"
+                    : "border-[#D1D5DB] hover:border-[#7C3AED] bg-[#F9FAFB] hover:bg-purple-50/20"
                 }`}
                 onClick={() => document.getElementById("file-upload")?.click()}
               >
@@ -380,7 +415,7 @@ export function ServiceDialog({ open, onClose, onSave, service }: ServiceDialogP
                 </Typography>
               </Box>
             )}
-            
+
             {/* Optional URL input for convenience */}
             <TextField
               label="Or enter Image URL"
@@ -414,10 +449,21 @@ export function ServiceDialog({ open, onClose, onSave, service }: ServiceDialogP
               type="button"
               variant="text"
               size="small"
-              startIcon={fetchingLocation ? <CircularProgress size={14} color="inherit" /> : <Compass size={14} />}
+              startIcon={
+                fetchingLocation ? (
+                  <CircularProgress size={14} color="inherit" />
+                ) : (
+                  <Compass size={14} />
+                )
+              }
               onClick={handleFetchLocation}
               disabled={fetchingLocation}
-              sx={{ color: "#7C3AED", textTransform: "none", fontWeight: 600, "&:hover": { bgcolor: "#7C3AED/10" } }}
+              sx={{
+                color: "#7C3AED",
+                textTransform: "none",
+                fontWeight: 600,
+                "&:hover": { bgcolor: "#7C3AED/10" },
+              }}
             >
               {fetchingLocation ? "Fetching..." : "Fetch Current Location"}
             </Button>
@@ -470,16 +516,24 @@ export function ServiceDialog({ open, onClose, onSave, service }: ServiceDialogP
         </DialogContent>
 
         <DialogActions sx={{ px: 3, pb: 2, pt: 1.5, gap: 1 }}>
-          <Button onClick={onClose} variant="outlined" sx={{ borderColor: "#E5E7EB", color: "#4B5563", "&:hover": { borderColor: "#D1D5DB", bgcolor: "#F9FAFB" } }}>
+          <Button
+            onClick={onClose}
+            variant="outlined"
+            sx={{
+              borderColor: "#E5E7EB",
+              color: "#4B5563",
+              "&:hover": { borderColor: "#D1D5DB", bgcolor: "#F9FAFB" },
+            }}
+          >
             Cancel
           </Button>
-          <Button 
-            type="submit" 
-            variant="contained" 
-            sx={{ 
-              bgcolor: "#7C3AED", 
+          <Button
+            type="submit"
+            variant="contained"
+            sx={{
+              bgcolor: "#7C3AED",
               "&:hover": { bgcolor: "#6D28D9" },
-              boxShadow: "0 4px 12px -2px rgba(124,58,237,.3)"
+              boxShadow: "0 4px 12px -2px rgba(124,58,237,.3)",
             }}
           >
             {service ? "Save Changes" : "Create Service"}

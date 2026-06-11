@@ -10,22 +10,27 @@ import { FeaturedToggle } from "@/components/ui/FeaturedToggle";
 import { useAppDispatch } from "@/store";
 import { toggleServiceStatus } from "@/store/slices/servicesSlice";
 
-export function ServiceTableRow({ 
-  s, 
+export function ServiceTableRow({
+  s,
   index,
   onEdit,
   onDelete,
-}: { 
-  s: Service; 
+}: {
+  s: Service;
   index: number;
   onEdit: (s: Service) => void;
   onDelete: (id: string | number) => void;
 }) {
   const dispatch = useAppDispatch();
   const d = new Date(s.created_at || s.dateAdded || new Date());
-  
+
   // Set fallback values for vendor and finance if they are empty
-  const vendor = s.vendor || { name: "Admin Vendor", initials: "ADM", avatarColor: "#7C3AED", verified: true };
+  const vendor = s.vendor || {
+    name: "Admin Vendor",
+    initials: "ADM",
+    avatarColor: "#7C3AED",
+    verified: true,
+  };
   const finance = s.finance || { amount: "PKR 0", label: "Earnings" };
 
   return (
@@ -49,7 +54,7 @@ export function ServiceTableRow({
             color: "#7C3AED",
             fontSize: 12,
             fontWeight: 700,
-            mx: "auto"
+            mx: "auto",
           }}
         >
           {index + 1}
@@ -57,19 +62,27 @@ export function ServiceTableRow({
       </TableCell>
       <TableCell>
         <div className="flex items-center gap-3">
-          <Avatar variant="rounded" src={s.image || undefined} sx={{ width: 40, height: 40, borderRadius: 1.5 }} />
+          <Avatar
+            variant="rounded"
+            src={s.image || undefined}
+            sx={{ width: 40, height: 40, borderRadius: 1.5 }}
+          />
           <div className="min-w-0">
             <div className="text-sm font-bold text-[#111827] leading-tight">{s.title}</div>
             <div className="text-xs text-[#6B7280] leading-tight mt-0.5">{s.subtitle}</div>
           </div>
         </div>
       </TableCell>
-      <TableCell><VendorAvatar vendor={vendor} /></TableCell>
+      <TableCell>
+        <VendorAvatar vendor={vendor} />
+      </TableCell>
       <TableCell>
         <div className="text-sm font-bold text-[#111827]">{finance.amount}</div>
         <div className="text-xs text-[#6B7280]">{finance.label}</div>
       </TableCell>
-      <TableCell><CategoryBadge category={s.category} /></TableCell>
+      <TableCell>
+        <CategoryBadge category={s.category} />
+      </TableCell>
       <TableCell>
         <div className="flex items-center gap-1 text-sm text-[#374151]">
           <MapPin size={14} className="text-[#9CA3AF]" />
@@ -77,22 +90,27 @@ export function ServiceTableRow({
         </div>
       </TableCell>
       <TableCell sx={{ fontSize: 13, fontWeight: 600, color: "#111827" }}>{s.price}</TableCell>
-      <TableCell 
-        onClick={() => dispatch(toggleServiceStatus(s.id))} 
-        sx={{ cursor: "pointer" }}
-      >
+      <TableCell onClick={() => dispatch(toggleServiceStatus(s.id))} sx={{ cursor: "pointer" }}>
         <StatusBadge status={s.status} />
       </TableCell>
-      <TableCell><FeaturedToggle id={s.id} on={s.featured} /></TableCell>
+      <TableCell>
+        <FeaturedToggle id={s.id} on={s.featured} />
+      </TableCell>
       <TableCell>
         <div className="text-sm font-bold text-[#111827]">{format(d, "MMM dd, yyyy")}</div>
         <div className="text-xs text-[#6B7280]">{format(d, "hh:mm a")}</div>
       </TableCell>
       <TableCell>
         <div className="flex items-center gap-0.5">
-          <IconButton size="small"><Eye size={16} className="text-[#9CA3AF]" /></IconButton>
-          <IconButton size="small" onClick={() => onEdit(s)}><Pencil size={16} className="text-[#7C3AED]" /></IconButton>
-          <IconButton size="small" onClick={() => onDelete(s.id)}><Trash2 size={16} className="text-red-500" /></IconButton>
+          <IconButton size="small">
+            <Eye size={16} className="text-[#9CA3AF]" />
+          </IconButton>
+          <IconButton size="small" onClick={() => onEdit(s)}>
+            <Pencil size={16} className="text-[#7C3AED]" />
+          </IconButton>
+          <IconButton size="small" onClick={() => onDelete(s.id)}>
+            <Trash2 size={16} className="text-red-500" />
+          </IconButton>
         </div>
       </TableCell>
     </TableRow>

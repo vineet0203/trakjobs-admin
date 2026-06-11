@@ -9,11 +9,18 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as VendorsRouteImport } from './routes/vendors'
 import { Route as ServicesRouteImport } from './routes/services'
 import { Route as ServiceCategoriesRouteImport } from './routes/service-categories'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as VendorsIdRouteImport } from './routes/vendors.$id'
 
+const VendorsRoute = VendorsRouteImport.update({
+  id: '/vendors',
+  path: '/vendors',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ServicesRoute = ServicesRouteImport.update({
   id: '/services',
   path: '/services',
@@ -34,18 +41,27 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const VendorsIdRoute = VendorsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => VendorsRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/service-categories': typeof ServiceCategoriesRoute
   '/services': typeof ServicesRoute
+  '/vendors': typeof VendorsRouteWithChildren
+  '/vendors/$id': typeof VendorsIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/service-categories': typeof ServiceCategoriesRoute
   '/services': typeof ServicesRoute
+  '/vendors': typeof VendorsRouteWithChildren
+  '/vendors/$id': typeof VendorsIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -53,13 +69,34 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/service-categories': typeof ServiceCategoriesRoute
   '/services': typeof ServicesRoute
+  '/vendors': typeof VendorsRouteWithChildren
+  '/vendors/$id': typeof VendorsIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/service-categories' | '/services'
+  fullPaths:
+    | '/'
+    | '/login'
+    | '/service-categories'
+    | '/services'
+    | '/vendors'
+    | '/vendors/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/service-categories' | '/services'
-  id: '__root__' | '/' | '/login' | '/service-categories' | '/services'
+  to:
+    | '/'
+    | '/login'
+    | '/service-categories'
+    | '/services'
+    | '/vendors'
+    | '/vendors/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/login'
+    | '/service-categories'
+    | '/services'
+    | '/vendors'
+    | '/vendors/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -67,10 +104,18 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   ServiceCategoriesRoute: typeof ServiceCategoriesRoute
   ServicesRoute: typeof ServicesRoute
+  VendorsRoute: typeof VendorsRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/vendors': {
+      id: '/vendors'
+      path: '/vendors'
+      fullPath: '/vendors'
+      preLoaderRoute: typeof VendorsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/services': {
       id: '/services'
       path: '/services'
@@ -99,14 +144,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/vendors/$id': {
+      id: '/vendors/$id'
+      path: '/$id'
+      fullPath: '/vendors/$id'
+      preLoaderRoute: typeof VendorsIdRouteImport
+      parentRoute: typeof VendorsRoute
+    }
   }
 }
+
+interface VendorsRouteChildren {
+  VendorsIdRoute: typeof VendorsIdRoute
+}
+
+const VendorsRouteChildren: VendorsRouteChildren = {
+  VendorsIdRoute: VendorsIdRoute,
+}
+
+const VendorsRouteWithChildren =
+  VendorsRoute._addFileChildren(VendorsRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   LoginRoute: LoginRoute,
   ServiceCategoriesRoute: ServiceCategoriesRoute,
   ServicesRoute: ServicesRoute,
+  VendorsRoute: VendorsRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

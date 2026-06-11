@@ -1,13 +1,5 @@
 import React, { useState } from "react";
-import {
-  Box,
-  Button,
-  CircularProgress,
-  Paper,
-  TextField,
-  Typography,
-  Alert,
-} from "@mui/material";
+import { Box, Button, CircularProgress, Paper, TextField, Typography, Alert } from "@mui/material";
 import { Briefcase } from "lucide-react";
 import axios from "axios";
 import { authStore } from "@/store/authStore";
@@ -24,7 +16,8 @@ export function LoginPage() {
     setLoading(true);
 
     try {
-      const apiBaseUrl = (import.meta.env.VITE_API_BASE_URL as string) || "http://localhost/trakjobs-api";
+      const apiBaseUrl =
+        (import.meta.env.VITE_API_BASE_URL as string) || "http://localhost/trakjobs-api";
       const response = await axios.post<{
         success: boolean;
         message?: string;
@@ -41,7 +34,7 @@ export function LoginPage() {
 
       if (response.data && response.data.success && response.data.data) {
         const { access_token, user } = response.data.data;
-        
+
         // Ensure user is platform admin
         if (user && user.is_platform_admin) {
           if (access_token) {
@@ -57,10 +50,12 @@ export function LoginPage() {
       } else {
         setError(response.data.message || "Failed to log in. Please try again.");
       }
-    } catch (err: any) {
+    } catch (err) {
       console.error("Login failed:", err);
+      const apiErr = err as { response?: { data?: { message?: string } } };
       const errorMessage =
-        err.response?.data?.message || "Invalid credentials. Please verify your email and password.";
+        apiErr.response?.data?.message ||
+        "Invalid credentials. Please verify your email and password.";
       setError(errorMessage);
     } finally {
       setLoading(false);

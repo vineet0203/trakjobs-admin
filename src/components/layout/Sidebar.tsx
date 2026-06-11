@@ -1,18 +1,60 @@
-import { Link } from "@tanstack/react-router";
+import React from "react";
+import { Link, useLocation } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import {
-  LayoutDashboard, LayoutList, Wrench, Store, CreditCard, Briefcase, Building2,
-  Users, ShoppingCart, Tag, Star, MessageSquare, Newspaper, FileText, Settings,
-  UserCircle, Globe, ExternalLink, ChevronDown, ChevronUp, Circle, Dot,
+  LayoutDashboard,
+  LayoutList,
+  Wrench,
+  Store,
+  CreditCard,
+  Briefcase,
+  Building2,
+  Users,
+  ShoppingCart,
+  Tag,
+  Star,
+  MessageSquare,
+  Newspaper,
+  FileText,
+  Settings,
+  UserCircle,
+  Globe,
+  ExternalLink,
+  ChevronDown,
+  ChevronUp,
+  Circle,
+  Dot,
 } from "lucide-react";
 
-type Item = { icon: any; label: string; href?: string; expandable?: boolean; active?: boolean };
+type SubItem = { label: string; href: string; search?: Record<string, unknown> };
+type Item = {
+  icon: React.ComponentType<{ size?: number; color?: string; className?: string }>;
+  label: string;
+  href?: string;
+  expandable?: boolean;
+  subItems?: SubItem[];
+};
 
 const items: Item[] = [
   { icon: LayoutDashboard, label: "Dashboard", href: "/dashboard" },
   { icon: LayoutList, label: "Listings", expandable: true },
-  { icon: Wrench, label: "Services", active: true, expandable: true, href: "/services" },
-  { icon: Store, label: "Vendors" },
+  {
+    icon: Wrench,
+    label: "Services",
+    expandable: true,
+    href: "/services",
+    subItems: [
+      { label: "Create Services", href: "/service-categories", search: undefined },
+      { label: "All Services", href: "/services", search: undefined },
+    ],
+  },
+  {
+    icon: Store,
+    label: "Vendors",
+    expandable: true,
+    href: "/vendors",
+    subItems: [{ label: "All Vendors", href: "/vendors", search: undefined }],
+  },
   { icon: CreditCard, label: "Finance", expandable: true },
   { icon: Briefcase, label: "Jobs", expandable: true },
   { icon: Building2, label: "Employers", expandable: true },
@@ -27,12 +69,10 @@ const items: Item[] = [
   { icon: UserCircle, label: "Users", expandable: true },
 ];
 
-const subItems = [
-  { label: "Create Services", href: "/service-categories", search: undefined },
-  { label: "All Services", href: "/services", search: undefined },
-];
-
 export function Sidebar({ open = true }: { open?: boolean }) {
+  const location = useLocation();
+  const pathname = location.pathname;
+
   return (
     <aside
       className="fixed left-0 top-0 z-30 h-screen border-r bg-white flex flex-col overflow-hidden transition-all duration-200"
@@ -40,7 +80,10 @@ export function Sidebar({ open = true }: { open?: boolean }) {
     >
       <div className="px-4 pt-4 pb-3">
         <Link to="/services" className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: "#7C3AED" }}>
+          <div
+            className="w-8 h-8 rounded-lg flex items-center justify-center"
+            style={{ background: "#7C3AED" }}
+          >
             <Briefcase size={18} color="#fff" />
           </div>
           <span className="font-extrabold text-[18px]" style={{ color: "#7C3AED" }}>
@@ -49,8 +92,16 @@ export function Sidebar({ open = true }: { open?: boolean }) {
         </Link>
       </div>
 
-      <div className="mx-3 mb-2 pb-3 border-b flex items-center gap-2" style={{ borderColor: "#E5E7EB" }}>
-        <div className="w-9 h-9 rounded-full text-white flex items-center justify-center font-bold" style={{ background: "#7C3AED" }}>A</div>
+      <div
+        className="mx-3 mb-2 pb-3 border-b flex items-center gap-2"
+        style={{ borderColor: "#E5E7EB" }}
+      >
+        <div
+          className="w-9 h-9 rounded-full text-white flex items-center justify-center font-bold"
+          style={{ background: "#7C3AED" }}
+        >
+          A
+        </div>
         <div className="flex-1 min-w-0">
           <div className="text-sm font-bold text-[#111827] leading-tight">Admin</div>
           <div className="text-[11px] text-[#6B7280] leading-tight">Super Administrator</div>
@@ -61,7 +112,12 @@ export function Sidebar({ open = true }: { open?: boolean }) {
       <nav className="flex-1 overflow-y-auto px-2 pb-4">
         {items.map((it, i) => {
           const Icon = it.icon;
-          const isActive = it.active;
+          const isSubActive = it.subItems?.some(
+            (s) => pathname === s.href || pathname.startsWith(s.href + "/"),
+          );
+          const isActive =
+            (it.href && (pathname === it.href || pathname.startsWith(it.href + "/"))) ||
+            !!isSubActive;
           const Chevron = isActive ? ChevronUp : ChevronDown;
           const body = (
             <motion.div
@@ -73,8 +129,12 @@ export function Sidebar({ open = true }: { open?: boolean }) {
                 background: isActive ? "#EDE9FE" : "transparent",
                 color: isActive ? "#7C3AED" : "#374151",
               }}
-              onMouseEnter={(e) => { if (!isActive) (e.currentTarget as HTMLDivElement).style.background = "#F9FAFB"; }}
-              onMouseLeave={(e) => { if (!isActive) (e.currentTarget as HTMLDivElement).style.background = "transparent"; }}
+              onMouseEnter={(e) => {
+                if (!isActive) (e.currentTarget as HTMLDivElement).style.background = "#F9FAFB";
+              }}
+              onMouseLeave={(e) => {
+                if (!isActive) (e.currentTarget as HTMLDivElement).style.background = "transparent";
+              }}
             >
               <Icon size={18} color={isActive ? "#7C3AED" : "#6B7280"} />
               <span className="text-[13.5px] font-semibold flex-1">{it.label}</span>
@@ -84,9 +144,9 @@ export function Sidebar({ open = true }: { open?: boolean }) {
           return (
             <div key={it.label}>
               {it.href ? <Link to={it.href}>{body}</Link> : body}
-              {isActive && (
+              {isActive && it.subItems && (
                 <div className="pl-9 pr-2 mt-1 mb-2 flex flex-col gap-1">
-                  {subItems.map((s) => (
+                  {it.subItems.map((s) => (
                     <Link
                       key={s.label}
                       to={s.href}
@@ -94,9 +154,9 @@ export function Sidebar({ open = true }: { open?: boolean }) {
                       className="flex items-center gap-2 py-1.5 text-[13px] cursor-pointer text-[#6B7280] font-medium hover:text-[#111827] transition-colors"
                       activeProps={{ style: { color: "#111827", fontWeight: 700 } }}
                     >
-                      {({ isActive: isSubActive }) => (
+                      {({ isActive: isItemActive }) => (
                         <>
-                          {isSubActive ? (
+                          {isItemActive ? (
                             <Dot size={22} className="-ml-1.5" style={{ color: "#7C3AED" }} />
                           ) : (
                             <Circle size={6} className="ml-1" fill="#D1D5DB" stroke="none" />
@@ -113,7 +173,10 @@ export function Sidebar({ open = true }: { open?: boolean }) {
         })}
       </nav>
 
-      <div className="border-t px-4 py-3 flex items-center justify-between text-[13px] text-[#6B7280]" style={{ borderColor: "#E5E7EB" }}>
+      <div
+        className="border-t px-4 py-3 flex items-center justify-between text-[13px] text-[#6B7280]"
+        style={{ borderColor: "#E5E7EB" }}
+      >
         <div className="flex items-center gap-2">
           <Globe size={16} />
           <span className="font-medium">View Website</span>

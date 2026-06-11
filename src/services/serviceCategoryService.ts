@@ -36,12 +36,17 @@ export const serviceCategoryService = {
     if (raw && Array.isArray(raw.data)) {
       return raw.data;
     }
-    return Object.values(raw).filter((v): v is ServiceCategory =>
-      typeof v === "object" && v !== null && "id" in v
+    return Object.values(raw).filter(
+      (v): v is ServiceCategory => typeof v === "object" && v !== null && "id" in v,
     );
   },
-  createCategory: async (data: Omit<ServiceCategory, "id" | "is_active">): Promise<ServiceCategory> => {
-    const response = await api.post("/api/v1/admin/service-categories", { ...data, is_active: true });
+  createCategory: async (
+    data: Omit<ServiceCategory, "id" | "is_active">,
+  ): Promise<ServiceCategory> => {
+    const response = await api.post("/api/v1/admin/service-categories", {
+      ...data,
+      is_active: true,
+    });
     return response.data.data;
   },
   updateCategory: async (id: number, data: Partial<ServiceCategory>): Promise<ServiceCategory> => {
@@ -59,15 +64,23 @@ export const serviceCategoryService = {
   // Sub-category endpoints
   getSubCategories: async (categoryId?: number): Promise<ServiceSubCategory[]> => {
     const response = await api.get("/api/v1/admin/service-sub-categories", {
-      params: categoryId ? { service_category_id: categoryId, all: true } : { all: true }
+      params: categoryId ? { service_category_id: categoryId, all: true } : { all: true },
     });
     return response.data.data || [];
   },
-  createSubCategory: async (data: Omit<ServiceSubCategory, "id" | "is_active">): Promise<ServiceSubCategory> => {
-    const response = await api.post("/api/v1/admin/service-sub-categories", { ...data, is_active: true });
+  createSubCategory: async (
+    data: Omit<ServiceSubCategory, "id" | "is_active">,
+  ): Promise<ServiceSubCategory> => {
+    const response = await api.post("/api/v1/admin/service-sub-categories", {
+      ...data,
+      is_active: true,
+    });
     return response.data.data;
   },
-  updateSubCategory: async (id: number, data: Partial<ServiceSubCategory>): Promise<ServiceSubCategory> => {
+  updateSubCategory: async (
+    id: number,
+    data: Partial<ServiceSubCategory>,
+  ): Promise<ServiceSubCategory> => {
     const response = await api.put(`/api/v1/admin/service-sub-categories/${id}`, data);
     return response.data.data;
   },

@@ -26,7 +26,10 @@ export function Navbar({ onToggleSidebar }: { onToggleSidebar: () => void }) {
       >
         <Search size={16} color="#9CA3AF" />
         <InputBase placeholder="Search anything..." sx={{ flex: 1, fontSize: 14 }} />
-        <span className="text-[11px] text-[#9CA3AF] border rounded px-1.5 py-0.5" style={{ borderColor: "#E5E7EB" }}>
+        <span
+          className="text-[11px] text-[#9CA3AF] border rounded px-1.5 py-0.5"
+          style={{ borderColor: "#E5E7EB" }}
+        >
           Ctrl /
         </span>
       </Paper>
@@ -36,7 +39,12 @@ export function Navbar({ onToggleSidebar }: { onToggleSidebar: () => void }) {
           <Bell size={20} color="#374151" />
         </Badge>
         <div className="flex items-center gap-2">
-          <div className="w-9 h-9 rounded-full text-white flex items-center justify-center font-bold" style={{ background: "#7C3AED" }}>A</div>
+          <div
+            className="w-9 h-9 rounded-full text-white flex items-center justify-center font-bold"
+            style={{ background: "#7C3AED" }}
+          >
+            A
+          </div>
           <div className="leading-tight">
             <div className="text-sm font-bold text-[#111827]">Admin</div>
             <div className="text-[11px] text-[#6B7280]">Super Administrator</div>

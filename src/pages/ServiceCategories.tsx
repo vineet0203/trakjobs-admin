@@ -51,7 +51,7 @@ export function ServiceCategoriesPage() {
   const [type, setType] = useState<"main" | "sub">("main");
   const [selectedCategory, setSelectedCategory] = useState<ServiceCategory | null>(null);
   const [selectedSubCategory, setSelectedSubCategory] = useState<ServiceSubCategory | null>(null);
-  
+
   // Input fields
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -227,11 +227,15 @@ export function ServiceCategoriesPage() {
             icon: selectedSubCategory.icon,
             sort_order: selectedSubCategory.sort_order,
           });
-          setSubCategories((prev) => prev.map((s) => (s.id === selectedSubCategory.id ? updated : s)));
+          setSubCategories((prev) =>
+            prev.map((s) => (s.id === selectedSubCategory.id ? updated : s)),
+          );
           toast.success("Sub-service updated successfully");
         } else {
           // Create Sub-category
-          const parentSubs = subCategories.filter((s) => s.service_category_id === parentCategoryId);
+          const parentSubs = subCategories.filter(
+            (s) => s.service_category_id === parentCategoryId,
+          );
           const created = await serviceCategoryService.createSubCategory({
             service_category_id: parentCategoryId,
             name,
@@ -241,7 +245,9 @@ export function ServiceCategoriesPage() {
             icon: "FileText",
             sort_order: parentSubs.length + 1,
           });
-          setSubCategories((prev) => [...prev, created].sort((a, b) => a.sort_order - b.sort_order));
+          setSubCategories((prev) =>
+            [...prev, created].sort((a, b) => a.sort_order - b.sort_order),
+          );
           toast.success("Sub-service created successfully");
         }
       }
@@ -283,35 +289,35 @@ export function ServiceCategoriesPage() {
       category.name.toLowerCase().includes(query) ||
       (category.slug || "").toLowerCase().includes(query) ||
       (category.description || "").toLowerCase().includes(query) ||
-      (category.price !== undefined && category.price !== null && String(category.price).includes(query));
+      (category.price !== undefined &&
+        category.price !== null &&
+        String(category.price).includes(query));
 
     if (catMatch) return true;
 
-    const categorySubs = subCategories.filter(
-      (sub) => sub.service_category_id === category.id
-    );
-    const subMatch = categorySubs.some((sub) =>
-      sub.name.toLowerCase().includes(query) ||
-      (sub.slug || "").toLowerCase().includes(query) ||
-      (sub.description || "").toLowerCase().includes(query) ||
-      (sub.price !== undefined && sub.price !== null && String(sub.price).includes(query))
+    const categorySubs = subCategories.filter((sub) => sub.service_category_id === category.id);
+    const subMatch = categorySubs.some(
+      (sub) =>
+        sub.name.toLowerCase().includes(query) ||
+        (sub.slug || "").toLowerCase().includes(query) ||
+        (sub.description || "").toLowerCase().includes(query) ||
+        (sub.price !== undefined && sub.price !== null && String(sub.price).includes(query)),
     );
 
     return subMatch;
   });
 
   const getFilteredSubCategories = (catId: number) => {
-    const categorySubs = subCategories.filter(
-      (sub) => sub.service_category_id === catId
-    );
+    const categorySubs = subCategories.filter((sub) => sub.service_category_id === catId);
     const query = searchQuery.toLowerCase().trim();
     if (!query) return categorySubs;
 
-    return categorySubs.filter((sub) =>
-      sub.name.toLowerCase().includes(query) ||
-      (sub.slug || "").toLowerCase().includes(query) ||
-      (sub.description || "").toLowerCase().includes(query) ||
-      (sub.price !== undefined && sub.price !== null && String(sub.price).includes(query))
+    return categorySubs.filter(
+      (sub) =>
+        sub.name.toLowerCase().includes(query) ||
+        (sub.slug || "").toLowerCase().includes(query) ||
+        (sub.description || "").toLowerCase().includes(query) ||
+        (sub.price !== undefined && sub.price !== null && String(sub.price).includes(query)),
     );
   };
 
@@ -319,8 +325,13 @@ export function ServiceCategoriesPage() {
     <div className="flex flex-col gap-6">
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div>
-          <h1 className="text-[26px] font-extrabold text-[#111827] leading-tight">Service Categories</h1>
-          <Breadcrumbs separator={<ChevronRight size={14} className="text-[#9CA3AF]" />} sx={{ mt: 0.5, fontSize: 13 }}>
+          <h1 className="text-[26px] font-extrabold text-[#111827] leading-tight">
+            Service Categories
+          </h1>
+          <Breadcrumbs
+            separator={<ChevronRight size={14} className="text-[#9CA3AF]" />}
+            sx={{ mt: 0.5, fontSize: 13 }}
+          >
             <span style={{ color: "#7C3AED", fontWeight: 600, cursor: "pointer" }}>Dashboard</span>
             <span style={{ color: "#7C3AED", fontWeight: 600, cursor: "pointer" }}>Services</span>
             <span style={{ color: "#6B7280" }}>Service Categories</span>
@@ -332,7 +343,12 @@ export function ServiceCategoriesPage() {
             color="primary"
             startIcon={<Plus size={16} />}
             onClick={handleAddNewCategory}
-            sx={{ height: 44, bgcolor: "#7C3AED", "&:hover": { bgcolor: "#6D28D9" }, boxShadow: "0 8px 20px -8px rgba(124,58,237,.55)" }}
+            sx={{
+              height: 44,
+              bgcolor: "#7C3AED",
+              "&:hover": { bgcolor: "#6D28D9" },
+              boxShadow: "0 8px 20px -8px rgba(124,58,237,.55)",
+            }}
           >
             Add New Service
           </Button>
@@ -340,7 +356,17 @@ export function ServiceCategoriesPage() {
       </div>
 
       {/* Real-time Search Input Field */}
-      <Box sx={{ display: "flex", alignItems: "center", gap: 2, bgcolor: "#fff", p: 2, borderRadius: 3, border: "1px solid #E5E7EB" }}>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          gap: 2,
+          bgcolor: "#fff",
+          p: 2,
+          borderRadius: 3,
+          border: "1px solid #E5E7EB",
+        }}
+      >
         <TextField
           placeholder="Search services..."
           value={searchQuery}
@@ -351,7 +377,7 @@ export function ServiceCategoriesPage() {
             maxWidth: 400,
             "& .MuiOutlinedInput-root": {
               borderRadius: 2,
-            }
+            },
           }}
           slotProps={{
             input: {
@@ -360,25 +386,44 @@ export function ServiceCategoriesPage() {
                 <IconButton size="small" onClick={() => setSearchQuery("")}>
                   <X size={16} />
                 </IconButton>
-              )
-            }
+              ),
+            },
           }}
         />
       </Box>
 
-      <Paper sx={{ border: "1px solid #E5E7EB", borderRadius: 3, overflow: "hidden", bgcolor: "#fff" }}>
+      <Paper
+        sx={{ border: "1px solid #E5E7EB", borderRadius: 3, overflow: "hidden", bgcolor: "#fff" }}
+      >
         <TableContainer>
           <Table sx={{ minWidth: 800 }}>
             <TableHead>
-              <TableRow sx={{ "& th": { bgcolor: "#fff", borderColor: "#E5E7EB", color: "#6B7280", fontSize: 11, fontWeight: 700, letterSpacing: ".05em", textTransform: "uppercase", py: 2 } }}>
-                <TableCell width={60} align="center">No.</TableCell>
+              <TableRow
+                sx={{
+                  "& th": {
+                    bgcolor: "#fff",
+                    borderColor: "#E5E7EB",
+                    color: "#6B7280",
+                    fontSize: 11,
+                    fontWeight: 700,
+                    letterSpacing: ".05em",
+                    textTransform: "uppercase",
+                    py: 2,
+                  },
+                }}
+              >
+                <TableCell width={60} align="center">
+                  No.
+                </TableCell>
                 <TableCell width={50}></TableCell>
                 <TableCell>Name</TableCell>
                 <TableCell>Slug</TableCell>
                 <TableCell>Description</TableCell>
                 <TableCell>Price (USD)</TableCell>
                 <TableCell>Status</TableCell>
-                <TableCell align="right" sx={{ pr: 3 }}>Actions</TableCell>
+                <TableCell align="right" sx={{ pr: 3 }}>
+                  Actions
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -391,7 +436,9 @@ export function ServiceCategoriesPage() {
               ) : filteredCategories.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={8} align="center" sx={{ py: 6, color: "#6B7280" }}>
-                    {searchQuery ? "No matching service categories found." : "No service categories found. Add your first category!"}
+                    {searchQuery
+                      ? "No matching service categories found."
+                      : "No service categories found. Add your first category!"}
                   </TableCell>
                 </TableRow>
               ) : (
@@ -402,7 +449,12 @@ export function ServiceCategoriesPage() {
                   return (
                     <React.Fragment key={category.id}>
                       {/* Main Category Row */}
-                      <TableRow sx={{ "&:hover": { bgcolor: "#F9FAFB" }, "& td": { borderColor: "#F3F4F6", py: 1.5 } }}>
+                      <TableRow
+                        sx={{
+                          "&:hover": { bgcolor: "#F9FAFB" },
+                          "& td": { borderColor: "#F3F4F6", py: 1.5 },
+                        }}
+                      >
                         {/* Styled Badge for Sequential Number */}
                         <TableCell align="center">
                           <Box
@@ -417,7 +469,7 @@ export function ServiceCategoriesPage() {
                               color: "#7C3AED",
                               fontSize: 12,
                               fontWeight: 700,
-                              mx: "auto"
+                              mx: "auto",
                             }}
                           >
                             {index + 1}
@@ -439,14 +491,31 @@ export function ServiceCategoriesPage() {
                             {category.name}
                           </span>
                         </TableCell>
-                        <TableCell sx={{ fontFamily: "ui-monospace, SFMono-Regular, monospace", fontSize: 13, color: "#4B5563" }}>
+                        <TableCell
+                          sx={{
+                            fontFamily: "ui-monospace, SFMono-Regular, monospace",
+                            fontSize: 13,
+                            color: "#4B5563",
+                          }}
+                        >
                           {category.slug}
                         </TableCell>
-                        <TableCell sx={{ color: "#6B7280", fontSize: 13, maxWidth: 250, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                        <TableCell
+                          sx={{
+                            color: "#6B7280",
+                            fontSize: 13,
+                            maxWidth: 250,
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap",
+                          }}
+                        >
                           {category.description || "-"}
                         </TableCell>
                         <TableCell sx={{ color: "#111827", fontSize: 13, fontWeight: 600 }}>
-                          {category.price !== undefined && category.price !== null ? `$${category.price}` : "-"}
+                          {category.price !== undefined && category.price !== null
+                            ? `$${category.price}`
+                            : "-"}
                         </TableCell>
                         <TableCell>
                           <div className="flex items-center gap-1">
@@ -456,7 +525,9 @@ export function ServiceCategoriesPage() {
                               color="primary"
                               size="small"
                             />
-                            <span className={`text-xs font-bold ${category.is_active ? "text-green-600" : "text-gray-400"}`}>
+                            <span
+                              className={`text-xs font-bold ${category.is_active ? "text-green-600" : "text-gray-400"}`}
+                            >
                               {category.is_active ? "Active" : "Inactive"}
                             </span>
                           </div>
@@ -468,14 +539,22 @@ export function ServiceCategoriesPage() {
                               variant="text"
                               startIcon={<Plus size={14} />}
                               onClick={() => handleAddNewSubCategory(category.id)}
-                              sx={{ textTransform: "none", color: "#7C3AED", fontWeight: 600, fontSize: 12 }}
+                              sx={{
+                                textTransform: "none",
+                                color: "#7C3AED",
+                                fontWeight: 600,
+                                fontSize: 12,
+                              }}
                             >
                               Add Sub-service
                             </Button>
                             <IconButton size="small" onClick={() => handleEditCategory(category)}>
                               <Pencil size={16} className="text-[#7C3AED]" />
                             </IconButton>
-                            <IconButton size="small" onClick={() => handleDeleteCategoryClick(category.id)}>
+                            <IconButton
+                              size="small"
+                              onClick={() => handleDeleteCategoryClick(category.id)}
+                            >
                               <Trash2 size={16} className="text-red-500" />
                             </IconButton>
                           </div>
@@ -486,19 +565,55 @@ export function ServiceCategoriesPage() {
                       <TableRow>
                         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={8}>
                           <Collapse in={isExpanded} timeout="auto" unmountOnExit>
-                            <Box sx={{ margin: 2, bgcolor: "#FBFDFF", border: "1px solid #EBF3FC", borderRadius: 2, p: 2 }}>
-                              <Typography variant="subtitle2" gutterBottom component="div" sx={{ fontWeight: 700, color: "#4B5563", mb: 1.5, display: "flex", alignItems: "center", gap: 1 }}>
+                            <Box
+                              sx={{
+                                margin: 2,
+                                bgcolor: "#FBFDFF",
+                                border: "1px solid #EBF3FC",
+                                borderRadius: 2,
+                                p: 2,
+                              }}
+                            >
+                              <Typography
+                                variant="subtitle2"
+                                gutterBottom
+                                component="div"
+                                sx={{
+                                  fontWeight: 700,
+                                  color: "#4B5563",
+                                  mb: 1.5,
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: 1,
+                                }}
+                              >
                                 Sub-services / Sub-categories under "{category.name}"
                               </Typography>
                               {categorySubs.length === 0 ? (
-                                <Typography variant="body2" sx={{ color: "#9CA3AF", py: 1, fontStyle: "italic" }}>
-                                  {searchQuery ? "No matching sub-services under this category." : "No sub-services added yet. Click \"Add Sub-service\" to add one."}
+                                <Typography
+                                  variant="body2"
+                                  sx={{ color: "#9CA3AF", py: 1, fontStyle: "italic" }}
+                                >
+                                  {searchQuery
+                                    ? "No matching sub-services under this category."
+                                    : 'No sub-services added yet. Click "Add Sub-service" to add one.'}
                                 </Typography>
                               ) : (
                                 <Table size="small" aria-label="subcategories">
                                   <TableHead>
-                                    <TableRow sx={{ "& th": { color: "#6B7280", fontWeight: 600, fontSize: 11, borderBottom: "1px solid #E5E7EB" } }}>
-                                      <TableCell width={60} align="center">No.</TableCell>
+                                    <TableRow
+                                      sx={{
+                                        "& th": {
+                                          color: "#6B7280",
+                                          fontWeight: 600,
+                                          fontSize: 11,
+                                          borderBottom: "1px solid #E5E7EB",
+                                        },
+                                      }}
+                                    >
+                                      <TableCell width={60} align="center">
+                                        No.
+                                      </TableCell>
                                       <TableCell>Name</TableCell>
                                       <TableCell>Slug</TableCell>
                                       <TableCell>Description</TableCell>
@@ -509,7 +624,13 @@ export function ServiceCategoriesPage() {
                                   </TableHead>
                                   <TableBody>
                                     {categorySubs.map((sub, subIndex) => (
-                                      <TableRow key={sub.id} sx={{ "&:hover": { bgcolor: "#F3F8FC" }, "& td": { py: 1, borderBottom: "1px solid #F3F4F6" } }}>
+                                      <TableRow
+                                        key={sub.id}
+                                        sx={{
+                                          "&:hover": { bgcolor: "#F3F8FC" },
+                                          "& td": { py: 1, borderBottom: "1px solid #F3F4F6" },
+                                        }}
+                                      >
                                         {/* Styled Sub-service Badge */}
                                         <TableCell align="center">
                                           <Box
@@ -524,17 +645,27 @@ export function ServiceCategoriesPage() {
                                               color: "#0284C7",
                                               fontSize: 11,
                                               fontWeight: 700,
-                                              mx: "auto"
+                                              mx: "auto",
                                             }}
                                           >
                                             {subIndex + 1}
                                           </Box>
                                         </TableCell>
-                                        <TableCell sx={{ fontWeight: 600, color: "#1F2937" }}>{sub.name}</TableCell>
-                                        <TableCell sx={{ fontFamily: "monospace", fontSize: 12 }}>{sub.slug}</TableCell>
-                                        <TableCell sx={{ color: "#6B7280", fontSize: 12 }}>{sub.description || "-"}</TableCell>
-                                        <TableCell sx={{ color: "#111827", fontSize: 12, fontWeight: 600 }}>
-                                          {sub.price !== undefined && sub.price !== null ? `$${sub.price}` : "-"}
+                                        <TableCell sx={{ fontWeight: 600, color: "#1F2937" }}>
+                                          {sub.name}
+                                        </TableCell>
+                                        <TableCell sx={{ fontFamily: "monospace", fontSize: 12 }}>
+                                          {sub.slug}
+                                        </TableCell>
+                                        <TableCell sx={{ color: "#6B7280", fontSize: 12 }}>
+                                          {sub.description || "-"}
+                                        </TableCell>
+                                        <TableCell
+                                          sx={{ color: "#111827", fontSize: 12, fontWeight: 600 }}
+                                        >
+                                          {sub.price !== undefined && sub.price !== null
+                                            ? `$${sub.price}`
+                                            : "-"}
                                         </TableCell>
                                         <TableCell>
                                           <div className="flex items-center gap-1">
@@ -544,17 +675,25 @@ export function ServiceCategoriesPage() {
                                               color="secondary"
                                               size="small"
                                             />
-                                            <span className={`text-[11px] font-bold ${sub.is_active ? "text-green-600" : "text-gray-400"}`}>
+                                            <span
+                                              className={`text-[11px] font-bold ${sub.is_active ? "text-green-600" : "text-gray-400"}`}
+                                            >
                                               {sub.is_active ? "Active" : "Inactive"}
                                             </span>
                                           </div>
                                         </TableCell>
                                         <TableCell align="right">
                                           <div className="flex items-center justify-end gap-0.5">
-                                            <IconButton size="small" onClick={() => handleEditSubCategory(sub)}>
+                                            <IconButton
+                                              size="small"
+                                              onClick={() => handleEditSubCategory(sub)}
+                                            >
                                               <Pencil size={14} className="text-[#7C3AED]" />
                                             </IconButton>
-                                            <IconButton size="small" onClick={() => handleDeleteSubCategoryClick(sub.id)}>
+                                            <IconButton
+                                              size="small"
+                                              onClick={() => handleDeleteSubCategoryClick(sub.id)}
+                                            >
                                               <Trash2 size={14} className="text-red-500" />
                                             </IconButton>
                                           </div>
@@ -583,8 +722,8 @@ export function ServiceCategoriesPage() {
         onClose={() => setFormOpen(false)}
         slotProps={{
           paper: {
-            sx: { borderRadius: 3, p: 1, width: "100%", maxWidth: 500 }
-          }
+            sx: { borderRadius: 3, p: 1, width: "100%", maxWidth: 500 },
+          },
         }}
       >
         <form onSubmit={handleSave}>
@@ -650,8 +789,8 @@ export function ServiceCategoriesPage() {
                 slotProps={{
                   htmlInput: {
                     step: "0.01",
-                    min: "0"
-                  }
+                    min: "0",
+                  },
                 }}
                 placeholder="0.00"
               />
@@ -672,7 +811,11 @@ export function ServiceCategoriesPage() {
             <Button
               onClick={() => setFormOpen(false)}
               variant="outlined"
-              sx={{ borderColor: "#E5E7EB", color: "#4B5563", "&:hover": { borderColor: "#D1D5DB", bgcolor: "#F9FAFB" } }}
+              sx={{
+                borderColor: "#E5E7EB",
+                color: "#4B5563",
+                "&:hover": { borderColor: "#D1D5DB", bgcolor: "#F9FAFB" },
+              }}
             >
               Cancel
             </Button>
@@ -693,8 +836,8 @@ export function ServiceCategoriesPage() {
         onClose={() => setDeleteOpen(false)}
         slotProps={{
           paper: {
-            sx: { borderRadius: 3, p: 1, maxWidth: 400 }
-          }
+            sx: { borderRadius: 3, p: 1, maxWidth: 400 },
+          },
         }}
       >
         <DialogTitle className="flex items-center gap-2 text-red-600 font-bold">
@@ -703,14 +846,20 @@ export function ServiceCategoriesPage() {
         </DialogTitle>
         <DialogContent>
           <DialogContentText className="text-gray-600">
-            Are you sure you want to delete this {deleteType === "main" ? "category" : "sub-service"}? This action cannot be undone and any associated mappings might be affected.
+            Are you sure you want to delete this{" "}
+            {deleteType === "main" ? "category" : "sub-service"}? This action cannot be undone and
+            any associated mappings might be affected.
           </DialogContentText>
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 2, gap: 1 }}>
           <Button
             onClick={() => setDeleteOpen(false)}
             variant="outlined"
-            sx={{ borderColor: "#E5E7EB", color: "#4B5563", "&:hover": { borderColor: "#D1D5DB", bgcolor: "#F9FAFB" } }}
+            sx={{
+              borderColor: "#E5E7EB",
+              color: "#4B5563",
+              "&:hover": { borderColor: "#D1D5DB", bgcolor: "#F9FAFB" },
+            }}
           >
             Cancel
           </Button>

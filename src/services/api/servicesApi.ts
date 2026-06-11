@@ -31,7 +31,10 @@ export const servicesApi = {
     return response.data;
   },
 
-  updateService: async (id: string | number, data: Partial<Service>): Promise<{ success: boolean; data: Service }> => {
+  updateService: async (
+    id: string | number,
+    data: Partial<Service>,
+  ): Promise<{ success: boolean; data: Service }> => {
     const response = await api.put(`/api/v1/admin/services/${id}`, data);
     return response.data;
   },

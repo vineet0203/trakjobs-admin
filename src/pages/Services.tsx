@@ -9,7 +9,7 @@ import {
   DialogActions,
   Typography,
 } from "@mui/material";
-import { ChevronRight, Plus, Upload, AlertTriangle } from "lucide-react";
+import { ChevronRight, Plus, Upload, AlertTriangle, LucideIcon } from "lucide-react";
 import { useSearch, useNavigate } from "@tanstack/react-router";
 import { StatsCards } from "@/components/services/StatsCards";
 import { FilterBar } from "@/components/services/FilterBar";
@@ -20,7 +20,7 @@ import {
   fetchServices,
   createService,
   updateService,
-  removeService
+  removeService,
 } from "@/store/slices/servicesSlice";
 import type { Service } from "@/data/servicesData";
 import { CircularProgress } from "@mui/material";
@@ -30,8 +30,9 @@ export function ServicesPage() {
   const dispatch = useAppDispatch();
   const search = useSearch({ from: "/services" });
   const navigate = useNavigate({ from: "/services" });
-  
-  const { searchQuery, categoryFilter, locationFilter, statusFilter, currentPage, loading } = useAppSelector((s) => s.services);
+
+  const { searchQuery, categoryFilter, locationFilter, statusFilter, currentPage, loading } =
+    useAppSelector((s) => s.services);
 
   // Service Add/Edit Dialog state
   const [formOpen, setFormOpen] = useState(false);
@@ -50,7 +51,10 @@ export function ServicesPage() {
       setSelectedService(null);
       setFormOpen(true);
       // Clean the search parameter so closing/reopening works correctly
-      navigate({ search: (prev: any) => ({ ...prev, action: undefined }), replace: true });
+      navigate({
+        search: (prev: Record<string, unknown>) => ({ ...prev, action: undefined }),
+        replace: true,
+      });
     }
   }, [search.action, navigate]);
 
@@ -74,26 +78,26 @@ export function ServicesPage() {
       try {
         await dispatch(removeService(deleteId)).unwrap();
         toast.success("Service deleted successfully");
-      } catch (err: any) {
-        toast.error(err || "Failed to delete service");
+      } catch (err) {
+        toast.error((err as string) || "Failed to delete service");
       }
       setDeleteId(null);
       setDeleteOpen(false);
     }
   };
 
-  const handleSaveService = async (data: any) => {
+  const handleSaveService = async (data: Partial<Service>) => {
     try {
       if (data.id) {
         await dispatch(updateService({ id: data.id, data })).unwrap();
         toast.success("Service updated successfully");
       } else {
-        await dispatch(createService(data)).unwrap();
+        await dispatch(createService(data as Service)).unwrap();
         toast.success("Service created successfully");
       }
       setFormOpen(false);
-    } catch (err: any) {
-      toast.error(err || "Failed to save service");
+    } catch (err) {
+      toast.error((err as string) || "Failed to save service");
     }
   };
 
@@ -102,14 +106,19 @@ export function ServicesPage() {
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div>
           <h1 className="text-[26px] font-extrabold text-[#111827] leading-tight">Services</h1>
-          <Breadcrumbs separator={<ChevronRight size={14} className="text-[#9CA3AF]" />} sx={{ mt: 0.5, fontSize: 13 }}>
+          <Breadcrumbs
+            separator={<ChevronRight size={14} className="text-[#9CA3AF]" />}
+            sx={{ mt: 0.5, fontSize: 13 }}
+          >
             <span style={{ color: "#7C3AED", fontWeight: 600, cursor: "pointer" }}>Dashboard</span>
             <span style={{ color: "#7C3AED", fontWeight: 600, cursor: "pointer" }}>Services</span>
             <span style={{ color: "#6B7280" }}>All Services</span>
           </Breadcrumbs>
         </div>
         <div className="flex items-center gap-3">
-          <Button variant="outlined" startIcon={<Upload size={16} />} sx={{ height: 44 }}>Import Services</Button>
+          <Button variant="outlined" startIcon={<Upload size={16} />} sx={{ height: 44 }}>
+            Import Services
+          </Button>
           <Button
             variant="contained"
             color="primary"
@@ -150,8 +159,8 @@ export function ServicesPage() {
               borderRadius: 3,
               p: 1,
               maxWidth: 400,
-            }
-          }
+            },
+          },
         }}
       >
         <DialogTitle className="flex items-center gap-2 text-red-600 font-bold">
@@ -160,14 +169,19 @@ export function ServicesPage() {
         </DialogTitle>
         <DialogContent>
           <DialogContentText className="text-gray-600">
-            Are you sure you want to delete this service? This action cannot be undone and the service will be permanently removed.
+            Are you sure you want to delete this service? This action cannot be undone and the
+            service will be permanently removed.
           </DialogContentText>
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 2, gap: 1 }}>
           <Button
             onClick={() => setDeleteOpen(false)}
             variant="outlined"
-            sx={{ borderColor: "#E5E7EB", color: "#4B5563", "&:hover": { borderColor: "#D1D5DB", bgcolor: "#F9FAFB" } }}
+            sx={{
+              borderColor: "#E5E7EB",
+              color: "#4B5563",
+              "&:hover": { borderColor: "#D1D5DB", bgcolor: "#F9FAFB" },
+            }}
           >
             Cancel
           </Button>

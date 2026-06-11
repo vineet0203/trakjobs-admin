@@ -9,7 +9,16 @@ export function VendorAvatar({ vendor }: { vendor: Service["vendor"] }) {
       {vendor.avatar ? (
         <Avatar src={vendor.avatar} sx={{ width: 32, height: 32 }} />
       ) : (
-        <Avatar sx={{ width: 32, height: 32, bgcolor: vendor.avatarColor ?? "#7C3AED", fontSize: 11, fontWeight: 700, color: "#fff" }}>
+        <Avatar
+          sx={{
+            width: 32,
+            height: 32,
+            bgcolor: vendor.avatarColor ?? "#7C3AED",
+            fontSize: 11,
+            fontWeight: 700,
+            color: "#fff",
+          }}
+        >
           {vendor.initials}
         </Avatar>
       )}

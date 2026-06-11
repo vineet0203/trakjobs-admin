@@ -7,7 +7,10 @@ export function MainLayout({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen" style={{ background: "#F9FAFB" }}>
       <Sidebar open={open} />
-      <div className="flex flex-col min-h-screen transition-[margin] duration-200" style={{ marginLeft: open ? 220 : 0 }}>
+      <div
+        className="flex flex-col min-h-screen transition-[margin] duration-200"
+        style={{ marginLeft: open ? 220 : 0 }}
+      >
         <Navbar onToggleSidebar={() => setOpen((v) => !v)} />
         <main className="flex-1 p-6">{children}</main>
       </div>

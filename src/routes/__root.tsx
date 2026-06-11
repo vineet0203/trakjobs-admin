@@ -1,10 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import {
-  Outlet,
-  Link,
-  createRootRouteWithContext,
-  redirect,
-} from "@tanstack/react-router";
+import { Outlet, Link, createRootRouteWithContext, redirect } from "@tanstack/react-router";
 
 import { ThemeProvider, CssBaseline } from "@mui/material";
 import { Provider as ReduxProvider } from "react-redux";

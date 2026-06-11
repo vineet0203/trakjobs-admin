@@ -44,7 +44,7 @@ export const fetchServices = createAsyncThunk(
   "services/fetchServices",
   async (_, { getState, rejectWithValue }) => {
     try {
-      const state = (getState() as any).services as ServicesState;
+      const state = (getState() as { services: ServicesState }).services;
       const params = {
         search: state.searchQuery || undefined,
         category: state.categoryFilter === "all" ? undefined : state.categoryFilter,
@@ -53,10 +53,11 @@ export const fetchServices = createAsyncThunk(
       };
       const response = await servicesApi.getAllServices(params);
       return response;
-    } catch (err: any) {
-      return rejectWithValue(err.response?.data?.message || "Failed to fetch services");
+    } catch (err) {
+      const apiErr = err as { response?: { data?: { message?: string } } };
+      return rejectWithValue(apiErr.response?.data?.message || "Failed to fetch services");
     }
-  }
+  },
 );
 
 export const createService = createAsyncThunk(
@@ -66,23 +67,28 @@ export const createService = createAsyncThunk(
       const response = await servicesApi.createService(data);
       dispatch(fetchServices());
       return response.data;
-    } catch (err: any) {
-      return rejectWithValue(err.response?.data?.message || "Failed to create service");
+    } catch (err) {
+      const apiErr = err as { response?: { data?: { message?: string } } };
+      return rejectWithValue(apiErr.response?.data?.message || "Failed to create service");
     }
-  }
+  },
 );
 
 export const updateService = createAsyncThunk(
   "services/updateService",
-  async ({ id, data }: { id: string | number; data: Partial<Service> }, { dispatch, rejectWithValue }) => {
+  async (
+    { id, data }: { id: string | number; data: Partial<Service> },
+    { dispatch, rejectWithValue },
+  ) => {
     try {
       const response = await servicesApi.updateService(id, data);
       dispatch(fetchServices());
       return response.data;
-    } catch (err: any) {
-      return rejectWithValue(err.response?.data?.message || "Failed to update service");
+    } catch (err) {
+      const apiErr = err as { response?: { data?: { message?: string } } };
+      return rejectWithValue(apiErr.response?.data?.message || "Failed to update service");
     }
-  }
+  },
 );
 
 export const removeService = createAsyncThunk(
@@ -92,10 +98,11 @@ export const removeService = createAsyncThunk(
       await servicesApi.deleteService(id);
       dispatch(fetchServices());
       return id;
-    } catch (err: any) {
-      return rejectWithValue(err.response?.data?.message || "Failed to delete service");
+    } catch (err) {
+      const apiErr = err as { response?: { data?: { message?: string } } };
+      return rejectWithValue(apiErr.response?.data?.message || "Failed to delete service");
     }
-  }
+  },
 );
 
 export const toggleServiceFeatured = createAsyncThunk(
@@ -105,10 +112,11 @@ export const toggleServiceFeatured = createAsyncThunk(
       const response = await servicesApi.toggleFeatured(id);
       dispatch(fetchServices());
       return response.data;
-    } catch (err: any) {
-      return rejectWithValue(err.response?.data?.message || "Failed to toggle featured status");
+    } catch (err) {
+      const apiErr = err as { response?: { data?: { message?: string } } };
+      return rejectWithValue(apiErr.response?.data?.message || "Failed to toggle featured status");
     }
-  }
+  },
 );
 
 export const toggleServiceStatus = createAsyncThunk(
@@ -118,10 +126,11 @@ export const toggleServiceStatus = createAsyncThunk(
       const response = await servicesApi.toggleStatus(id);
       dispatch(fetchServices());
       return response.data;
-    } catch (err: any) {
-      return rejectWithValue(err.response?.data?.message || "Failed to toggle status");
+    } catch (err) {
+      const apiErr = err as { response?: { data?: { message?: string } } };
+      return rejectWithValue(apiErr.response?.data?.message || "Failed to toggle status");
     }
-  }
+  },
 );
 
 const slice = createSlice({
