@@ -110,7 +110,7 @@ export function VendorDetailTabs({ vendor, onUpdate }: VendorDetailTabsProps) {
           }}
         >
           <Grid container spacing={3}>
-            <Grid item xs={12} md={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <TextField
                 label="Business Name"
                 value={businessName}
@@ -120,7 +120,7 @@ export function VendorDetailTabs({ vendor, onUpdate }: VendorDetailTabsProps) {
                 size="small"
               />
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <TextField
                 label="Website URL"
                 value={websiteName}
@@ -129,7 +129,7 @@ export function VendorDetailTabs({ vendor, onUpdate }: VendorDetailTabsProps) {
                 size="small"
               />
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <TextField
                 label="Business Type"
                 value={businessType}
@@ -138,7 +138,7 @@ export function VendorDetailTabs({ vendor, onUpdate }: VendorDetailTabsProps) {
                 size="small"
               />
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <TextField
                 label="Owner Full Name"
                 value={fullName}
@@ -148,7 +148,7 @@ export function VendorDetailTabs({ vendor, onUpdate }: VendorDetailTabsProps) {
                 size="small"
               />
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <TextField
                 label="Owner Email"
                 value={email}
@@ -159,7 +159,7 @@ export function VendorDetailTabs({ vendor, onUpdate }: VendorDetailTabsProps) {
                 size="small"
               />
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <TextField
                 label="Mobile Number"
                 value={mobileNumber}
@@ -168,7 +168,7 @@ export function VendorDetailTabs({ vendor, onUpdate }: VendorDetailTabsProps) {
                 size="small"
               />
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <TextField
                 label="Service Category"
                 value={serviceCategory}
@@ -177,7 +177,7 @@ export function VendorDetailTabs({ vendor, onUpdate }: VendorDetailTabsProps) {
                 size="small"
               />
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <TextField
                 label="Service Sub Category"
                 value={serviceSubCategory}
@@ -186,7 +186,7 @@ export function VendorDetailTabs({ vendor, onUpdate }: VendorDetailTabsProps) {
                 size="small"
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={{ xs: 12 }}>
               <FormControlLabel
                 control={
                   <Switch
@@ -198,7 +198,7 @@ export function VendorDetailTabs({ vendor, onUpdate }: VendorDetailTabsProps) {
                 label="Accepting Bookings"
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid size={{ xs: 12 }}>
               <Button
                 type="submit"
                 variant="contained"

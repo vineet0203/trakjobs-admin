@@ -14,6 +14,7 @@ import { Route as ServicesRouteImport } from './routes/services'
 import { Route as ServiceCategoriesRouteImport } from './routes/service-categories'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as VendorsIndexRouteImport } from './routes/vendors.index'
 import { Route as VendorsIdRouteImport } from './routes/vendors.$id'
 
 const VendorsRoute = VendorsRouteImport.update({
@@ -41,6 +42,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const VendorsIndexRoute = VendorsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => VendorsRoute,
+} as any)
 const VendorsIdRoute = VendorsIdRouteImport.update({
   id: '/$id',
   path: '/$id',
@@ -54,14 +60,15 @@ export interface FileRoutesByFullPath {
   '/services': typeof ServicesRoute
   '/vendors': typeof VendorsRouteWithChildren
   '/vendors/$id': typeof VendorsIdRoute
+  '/vendors/': typeof VendorsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/service-categories': typeof ServiceCategoriesRoute
   '/services': typeof ServicesRoute
-  '/vendors': typeof VendorsRouteWithChildren
   '/vendors/$id': typeof VendorsIdRoute
+  '/vendors': typeof VendorsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -71,6 +78,7 @@ export interface FileRoutesById {
   '/services': typeof ServicesRoute
   '/vendors': typeof VendorsRouteWithChildren
   '/vendors/$id': typeof VendorsIdRoute
+  '/vendors/': typeof VendorsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -81,14 +89,15 @@ export interface FileRouteTypes {
     | '/services'
     | '/vendors'
     | '/vendors/$id'
+    | '/vendors/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/login'
     | '/service-categories'
     | '/services'
-    | '/vendors'
     | '/vendors/$id'
+    | '/vendors'
   id:
     | '__root__'
     | '/'
@@ -97,6 +106,7 @@ export interface FileRouteTypes {
     | '/services'
     | '/vendors'
     | '/vendors/$id'
+    | '/vendors/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -144,6 +154,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/vendors/': {
+      id: '/vendors/'
+      path: '/'
+      fullPath: '/vendors/'
+      preLoaderRoute: typeof VendorsIndexRouteImport
+      parentRoute: typeof VendorsRoute
+    }
     '/vendors/$id': {
       id: '/vendors/$id'
       path: '/$id'
@@ -156,10 +173,12 @@ declare module '@tanstack/react-router' {
 
 interface VendorsRouteChildren {
   VendorsIdRoute: typeof VendorsIdRoute
+  VendorsIndexRoute: typeof VendorsIndexRoute
 }
 
 const VendorsRouteChildren: VendorsRouteChildren = {
   VendorsIdRoute: VendorsIdRoute,
+  VendorsIndexRoute: VendorsIndexRoute,
 }
 
 const VendorsRouteWithChildren =

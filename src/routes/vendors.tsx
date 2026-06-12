@@ -1,6 +1,5 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { MainLayout } from "@/components/layout/MainLayout";
-import { VendorsPage } from "@/pages/Vendors";
 
 export const Route = createFileRoute("/vendors")({
   component: Page,
@@ -9,7 +8,7 @@ export const Route = createFileRoute("/vendors")({
 function Page() {
   return (
     <MainLayout>
-      <VendorsPage />
+      <Outlet />
     </MainLayout>
   );
 }
