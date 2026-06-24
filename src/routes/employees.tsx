@@ -6,9 +6,5 @@ export const Route = createFileRoute("/employees")({
 });
 
 function Page() {
-  return (
-    <MainLayout>
-      <Outlet />
-    </MainLayout>
-  );
+  return <Outlet />;
 }

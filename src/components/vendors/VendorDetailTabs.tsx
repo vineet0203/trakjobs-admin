@@ -69,8 +69,8 @@ export function VendorDetailTabs({ vendor, onUpdate, activeTab, onTabChange }: V
   const [subCategoriesLoading, setSubCategoriesLoading] = useState(false);
 
   // Initialize service category and sub category state
-  const [serviceCategory, setServiceCategory] = useState<string>(vendor.service_category || "");
-  const [serviceSubCategory, setServiceSubCategory] = useState<string>(vendor.service_sub_category || "");
+  const [serviceCategory, setServiceCategory] = useState<string>("");
+  const [serviceSubCategory, setServiceSubCategory] = useState<string>("");
 
   // Fetch active categories on mount
   useEffect(() => {
@@ -78,8 +78,14 @@ export function VendorDetailTabs({ vendor, onUpdate, activeTab, onTabChange }: V
       setCategoriesLoading(true);
       try {
         const response = await api.get("/api/v1/public/service-categories");
-        const fetched = response.data?.data || [];
-        setCategories(fetched.filter((c: ServiceCategory) => c.is_active));
+      const fetched = response.data?.data || [];
+      const active = fetched.filter((c: ServiceCategory) => c.is_active);
+      setCategories(active);
+      // Set initial service category slug based on vendor's stored name (if not already set)
+      if (!serviceCategory && vendor.service_category) {
+        const match = active.find((c) => c.name === vendor.service_category || c.slug === vendor.service_category);
+        if (match) setServiceCategory(match.slug);
+      }
       } catch (err) {
         console.error("Failed to fetch categories", err);
       } finally {
@@ -103,6 +109,11 @@ export function VendorDetailTabs({ vendor, onUpdate, activeTab, onTabChange }: V
         });
         const fetched = response.data?.data || [];
         setSubCategories(fetched.filter((s: ServiceSubCategory) => s.is_active));
+        // Set initial sub category slug based on vendor's stored sub category name (if not already set)
+        if (!serviceSubCategory && vendor.service_sub_category) {
+          const matchSub = fetched.find((s) => s.name === vendor.service_sub_category || s.slug === vendor.service_sub_category);
+          if (matchSub) setServiceSubCategory(matchSub.slug);
+        }
       } catch (err) {
         console.error("Failed to fetch sub-categories", err);
       } finally {

@@ -6,9 +6,5 @@ export const Route = createFileRoute("/vendors")({
 });
 
 function Page() {
-  return (
-    <MainLayout>
-      <Outlet />
-    </MainLayout>
-  );
+  return <Outlet />;
 }
