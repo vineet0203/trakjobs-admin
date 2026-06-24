@@ -103,7 +103,7 @@ export function ServiceDialog({ open, onClose, onSave, service }: ServiceDialogP
       setTitle(service.title);
       setSubtitle(service.subtitle || "");
       setImage(service.image || "");
-      setPrice(service.price ? service.price.replace("PKR ", "").replace("+", "") : "");
+      setPrice(service.price ? service.price.replace("USD ", "").replace("+", "") : "");
       setLocation(service.location || "");
       setDetailedAddress(service.detailedAddress || service.detailed_address || "");
       setCategory(service.category);
@@ -240,7 +240,7 @@ export function ServiceDialog({ open, onClose, onSave, service }: ServiceDialogP
       subtitle: subtitle || `${category} by Admin`,
       image:
         image || "https://images.unsplash.com/photo-1621905251918-48416bd8575a?w=80&h=80&fit=crop",
-      price: price.startsWith("PKR") ? price : `PKR ${price}`,
+      price: price.startsWith("USD") ? price : `USD ${price}`,
       location,
       detailedAddress,
       detailed_address: detailedAddress,
@@ -430,7 +430,7 @@ export function ServiceDialog({ open, onClose, onSave, service }: ServiceDialogP
           </Box>
 
           <TextField
-            label="Price (PKR)"
+            label="Price (USD)"
             value={price}
             onChange={(e) => setPrice(e.target.value)}
             fullWidth

@@ -31,7 +31,7 @@ export function ServiceTableRow({
     avatarColor: "#7C3AED",
     verified: true,
   };
-  const finance = s.finance || { amount: "PKR 0", label: "Earnings" };
+  const finance = s.finance || { amount: "USD 0", label: "Earnings" };
 
   return (
     <TableRow
