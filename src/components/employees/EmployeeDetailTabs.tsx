@@ -19,6 +19,8 @@ import { User, Calendar, History, MapPin, Clock } from "lucide-react";
 import { employeeService, EmployeeWithVendor, ScheduleItem } from "@/services/employeeService";
 import { toast } from "sonner";
 
+import { formatTitleCase } from "@/lib/utils";
+
 interface EmployeeDetailTabsProps {
   employee: EmployeeWithVendor;
   onUpdate: (updatedEmployee: EmployeeWithVendor) => void;
@@ -268,7 +270,7 @@ export function EmployeeDetailTabs({ employee, onUpdate }: EmployeeDetailTabsPro
                     DESIGNATION
                   </Typography>
                   <Typography variant="body1" className="text-gray-800 font-medium">
-                    {employee.designation || "-"}
+                    {formatTitleCase(employee.designation) || "-"}
                   </Typography>
                 </Box>
               </Grid>
@@ -278,7 +280,7 @@ export function EmployeeDetailTabs({ employee, onUpdate }: EmployeeDetailTabsPro
                     DEPARTMENT
                   </Typography>
                   <Typography variant="body1" className="text-gray-800 font-medium">
-                    {employee.department || "-"}
+                    {formatTitleCase(employee.department) || "-"}
                   </Typography>
                 </Box>
               </Grid>

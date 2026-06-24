@@ -6,6 +6,8 @@ import { employeeService, EmployeeWithVendor } from "@/services/employeeService"
 import { EmployeeDetailTabs } from "../components/employees/EmployeeDetailTabs";
 import { toast } from "sonner";
 
+import { formatTitleCase } from "@/lib/utils";
+
 interface EmployeeDetailPageProps {
   id: number;
 }
@@ -113,7 +115,7 @@ export function EmployeeDetailPage({ id }: EmployeeDetailPageProps) {
                 Role
               </Typography>
               <Typography variant="h6" sx={{ fontWeight: 800, color: "#7C3AED" }}>
-                {employee.designation || "Employee"}
+                {formatTitleCase(employee.designation) || "Employee"}
               </Typography>
             </div>
             <div className="text-center">
@@ -124,7 +126,7 @@ export function EmployeeDetailPage({ id }: EmployeeDetailPageProps) {
                 Department
               </Typography>
               <Typography variant="h6" sx={{ fontWeight: 800, color: "#7C3AED" }}>
-                {employee.department || "-"}
+                {formatTitleCase(employee.department) || "-"}
               </Typography>
             </div>
           </div>

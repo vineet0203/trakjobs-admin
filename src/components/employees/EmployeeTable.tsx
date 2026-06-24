@@ -31,6 +31,8 @@ import { EmployeeResetPassword } from "./EmployeeResetPassword";
 import type { Vendor } from "@/types/vendor";
 import { toast } from "sonner";
 
+import { formatTitleCase } from "@/lib/utils";
+
 interface EmployeeTableProps {
   employees: EmployeeWithVendor[];
   loading: boolean;
@@ -293,8 +295,8 @@ export function EmployeeTable({
                       <TableCell sx={{ color: "#4B5563" }}>
                         {e.mobile_number || e.phone || "-"}
                       </TableCell>
-                      <TableCell sx={{ color: "#4B5563" }}>{e.designation || "-"}</TableCell>
-                      <TableCell sx={{ color: "#4B5563" }}>{e.department || "-"}</TableCell>
+                      <TableCell sx={{ color: "#4B5563" }}>{formatTitleCase(e.designation) || "-"}</TableCell>
+                      <TableCell sx={{ color: "#4B5563" }}>{formatTitleCase(e.department) || "-"}</TableCell>
                       <TableCell align="center">
                         <div className="flex items-center justify-center gap-1">
                           <Switch

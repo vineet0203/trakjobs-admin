@@ -27,6 +27,8 @@ import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import type { Employee } from "@/types/vendor";
 import { toast } from "sonner";
 
+import { formatTitleCase } from "@/lib/utils";
+
 interface EmployeeTableProps {
   vendorId: number;
 }
@@ -290,8 +292,8 @@ export function EmployeeTable({ vendorId }: EmployeeTableProps) {
                       </TableCell>
                       <TableCell sx={{ color: "#4B5563" }}>{e.email}</TableCell>
                       <TableCell sx={{ color: "#4B5563" }}>{e.phone || "-"}</TableCell>
-                      <TableCell sx={{ color: "#4B5563" }}>{e.designation || "-"}</TableCell>
-                      <TableCell sx={{ color: "#4B5563" }}>{e.department || "-"}</TableCell>
+                      <TableCell sx={{ color: "#4B5563" }}>{formatTitleCase(e.designation) || "-"}</TableCell>
+                      <TableCell sx={{ color: "#4B5563" }}>{formatTitleCase(e.department) || "-"}</TableCell>
                       <TableCell align="center">
                         <div className="flex items-center justify-center gap-1">
                           <Switch
