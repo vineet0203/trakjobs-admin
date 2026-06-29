@@ -113,7 +113,7 @@ export function LoginPage() {
               letterSpacing: "-0.025em",
             }}
           >
-            Trak<span style={{ color: "#111827" }}>Jobs</span>
+            FixlyHandy
           </Typography>
           <Typography
             variant="body2"
