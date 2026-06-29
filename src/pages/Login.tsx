@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Box, Button, CircularProgress, Paper, TextField, Typography, Alert } from "@mui/material";
-import logoBlue from "@/assets/logo_blue.png";
 import axios from "axios";
 import { authStore } from "@/store/authStore";
 
@@ -87,7 +86,22 @@ export function LoginPage() {
         }}
       >
         <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", mb: 4 }}>
-          <img src={logoBlue} alt="FixlyHandy" style={{ height: 60, marginBottom: 8 }} />
+          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 8 }}>
+            <div style={{ display: "flex", height: 44, width: 44, alignItems: "center", justifyContent: "center", borderRadius: 12, background: "#fff7ed", color: "#0F2744" }}>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2L2 12V22H22V12L12 2Z" stroke="#0f172a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M12 22V12" stroke="#0f172a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </div>
+            <div style={{ lineHeight: 1, paddingTop: 4 }}>
+              <div style={{ fontSize: 22, fontWeight: 900, letterSpacing: "-0.025em", color: "#0F2744" }}>
+                Fixly<span style={{ color: "#ffb800" }}>Handy</span>
+              </div>
+              <div style={{ marginTop: 2, fontSize: 10, fontWeight: 600, color: "#6B7280", letterSpacing: "0.05em", textTransform: "uppercase" }}>
+                Fix it. Right. On time.
+              </div>
+            </div>
+          </div>
           <Typography
             variant="body2"
             sx={{
