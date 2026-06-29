@@ -17,7 +17,7 @@ export function LoginPage() {
 
     try {
       const apiBaseUrl =
-        (import.meta.env.VITE_API_BASE_URL as string) || "http://localhost/trakjobs-api";
+        (import.meta.env.VITE_API_BASE_URL as string) || "http://localhost/fixlyhandy-api";
       const response = await axios.post<{
         success: boolean;
         message?: string;
