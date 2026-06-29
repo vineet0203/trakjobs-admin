@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Box, Button, CircularProgress, Paper, TextField, Typography, Alert } from "@mui/material";
-import { Briefcase } from "lucide-react";
+import logoBlue from "@/assets/logo_blue.png";
 import axios from "axios";
 import { authStore } from "@/store/authStore";
 
@@ -87,34 +87,7 @@ export function LoginPage() {
         }}
       >
         <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", mb: 4 }}>
-          <Box
-            sx={{
-              w: 12,
-              h: 12,
-              p: 1.5,
-              borderRadius: 2,
-              bgcolor: "#7C3AED",
-              color: "#FFF",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              mb: 2,
-              boxShadow: "0 8px 16px -4px rgba(124, 58, 237, 0.3)",
-            }}
-          >
-            <Briefcase size={24} />
-          </Box>
-          <Typography
-            variant="h5"
-            sx={{
-              fontWeight: 900,
-              fontSize: "24px",
-              color: "#7C3AED",
-              letterSpacing: "-0.025em",
-            }}
-          >
-            FixlyHandy
-          </Typography>
+          <img src={logoBlue} alt="FixlyHandy" style={{ height: 60, marginBottom: 8 }} />
           <Typography
             variant="body2"
             sx={{
