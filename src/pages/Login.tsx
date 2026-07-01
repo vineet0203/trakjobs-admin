@@ -95,7 +95,7 @@ export function LoginPage() {
             </div>
             <div style={{ lineHeight: 1, paddingTop: 4 }}>
               <div style={{ fontSize: 22, fontWeight: 900, letterSpacing: "-0.025em", color: "#0F2744" }}>
-                Fixly<span style={{ color: "#ffb800" }}>Handy</span>
+                Trak<span style={{ color: "#ffb800" }}>Jobs</span>
               </div>
               <div style={{ marginTop: 2, fontSize: 10, fontWeight: 600, color: "#6B7280", letterSpacing: "0.05em", textTransform: "uppercase" }}>
                 Fix it. Right. On time.
